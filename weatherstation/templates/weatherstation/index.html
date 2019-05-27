@@ -1,0 +1,26 @@
+{% extends "weatherstation/base.html" %}
+{% block content %}
+    {% for data in stations %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+                <h2><a class="mr-2" href="#">{{ data.title }}</a></h2>
+            </div>
+            <p class="article-content">Temperature = {{ data.temperature }} °C</p>
+            <p class="article-content">Humidity = {{ data.humidity }} RH%</p>
+            <p class="article-content">Ambient Light = {{ data.ambient_light }}</p>
+            <p class="article-content">Pressure = {{ data.pressure }} PA</p>
+            <p class="article-content">Altitude = {{ data.altitude }} Meters</p>
+          </div>
+        </article>
+
+    {% endfor %}
+
+<!--    <form method="POST" action="">-->
+<!--        {% csrf_token %}-->
+<!--        {{form.media}}-->
+<!--        {{form.as_p}}-->
+<!--    </form>-->
+
+{% endblock content %}
+
