@@ -25,8 +25,8 @@ stations = [
 
 def index(request):
     context = {
-        # 'stations': Station.objects.all()
-        'stations': stations
+        'stations': Station.objects.all()
+        # 'stations': stations
     }
     return render(request, 'weatherstation/index.html', context)
 

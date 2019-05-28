@@ -10,6 +10,8 @@ class Station(models.Model):
     ambient_light = models.IntegerField()
     pressure = models.FloatField(default=0)
     altitude = models.FloatField(default=0)
+    lat = models.FloatField(default=0)
+    long = models.FloatField(default=0)
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
