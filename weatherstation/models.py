@@ -4,18 +4,18 @@ from django.contrib.auth.models import User
 
 
 class Station(models.Model):
-    title = models.CharField(max_length=50)
-    temperature = models.FloatField(default=0)
-    humidity = models.FloatField(default=0)
-    ambient_light = models.IntegerField()
-    pressure = models.FloatField(default=0)
-    altitude = models.FloatField(default=0)
-    lat = models.FloatField(default=0)
-    long = models.FloatField(default=0)
-    date_posted = models.DateTimeField(default=timezone.now)
+    station_title = models.CharField(max_length=100)
+    station_temperature = models.FloatField(default=0)
+    station_humidity = models.FloatField(default=0)
+    station_ambient_light = models.IntegerField()
+    station_pressure = models.FloatField(default=0)
+    station_altitude = models.FloatField(default=0)
+    station_latitude = models.FloatField(default=0)
+    station_longitude = models.FloatField(default=0)
+    station_date_retrieved = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.title
+        return self.station_title
 
 
 

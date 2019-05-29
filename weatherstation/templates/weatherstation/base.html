@@ -9,6 +9,12 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'weatherstation/main.css' %}">
 
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!--    Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
 
     {% if title %}
         <title>Weather Station - {{ title }}</title>
@@ -30,12 +36,13 @@
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'index' %}">Home</a>
               <a class="nav-item nav-link" href="{% url 'about' %}">About</a>
+              <a class="nav-item nav-link" href="{% url 'add_station' %}">Add Station</a>
             </div>
             <!-- Navbar Right Side -->
-            <div class="navbar-nav">
-              <a class="nav-item nav-link" href="#">Login</a>
-              <a class="nav-item nav-link" href="#">Register</a>
-            </div>
+<!--            <div class="navbar-nav">-->
+<!--              <a class="nav-item nav-link" href="#">Login</a>-->
+<!--              <a class="nav-item nav-link" href="#">Register</a>-->
+<!--            </div>-->
           </div>
         </div>
       </nav>

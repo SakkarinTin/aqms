@@ -10,3 +10,4 @@ class CityAdminForm(forms.ModelForm):
             'coordinates': GooglePointFieldWidget,
             'city_hall': GooglePointFieldWidget,
         }
+
