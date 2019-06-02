@@ -1,4 +1,14 @@
 import os
+if os.name == 'nt':
+    import platform
+    OSGEO4W = r"C:\OSGeo4W"
+    if '64' in platform.architecture()[0]:
+        OSGEO4W += "64"
+    assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
+    os.environ['OSGEO4W_ROOT'] = OSGEO4W
+    os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
+    os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
+    os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,29 +26,18 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Google Maps
-
-GOOGLE_MAPS_API_KEY = "AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk"
-
-MAP_WIDGETS = {
-    "GooglePointFieldWidget": (
-        ("zoom", 15),
-        ("mapCenterLocationName", 'Thailand'),
-    ),
-    "GOOGLE_MAP_API_KEY": GOOGLE_MAPS_API_KEY
-}
-
 # Application definition
 
 INSTALLED_APPS = [
-    'weatherstation.apps.WeatherstationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_google_maps',
+    'django.contrib.gis',
+    'leaflet',
+    'weatherstation.apps.WeatherstationConfig',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +76,7 @@ WSGI_APPLICATION = 'hexiwearwebsite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'hexiwear',
         'USER': 'postgres',
         'PASSWORD': '123qweasd',
@@ -124,4 +123,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
+# [ERROR] Could not find the GDAL library
+
+# GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
 

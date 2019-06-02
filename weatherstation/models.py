@@ -1,6 +1,9 @@
-from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db import models
+from django.contrib.gis.db import models as geomodels
+from django.db.models import Manager as GeoManager
+
 
 
 class Station(models.Model):
@@ -10,8 +13,8 @@ class Station(models.Model):
     station_ambient_light = models.IntegerField()
     station_pressure = models.FloatField(default=0)
     station_altitude = models.FloatField(default=0)
-    station_latitude = models.FloatField(default=0)
-    station_longitude = models.FloatField(default=0)
+    station_location = geomodels.PointField(srid=4326)
+    station_objects = GeoManager()
     station_date_retrieved = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

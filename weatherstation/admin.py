@@ -1,14 +1,11 @@
-from django.contrib import admin
+from django.contrib.gis import admin
 from .models import Station
+from leaflet.admin import LeafletGeoAdmin
 
-# from django.contrib.gis.db import models
-# from mapwidgets.widgets import GooglePointFieldWidget
-
-
-admin.site.register(Station)
+class StationAdmin(LeafletGeoAdmin):
+    list_display = ('station_title', 'station_location')
 
 
-# class CityAdmin(admin.ModelAdmin):
-#     formfield_overrides = {
-#         models.PointField: {"widget": GooglePointFieldWidget},
-#     }
+admin.site.register(Station, StationAdmin)
+# admin.site.register(Station, admin.GeoModelAdmin)
+

@@ -83,4 +83,6 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
-#success_message{ display: none;}
+#map {
+  height: 400px;
+}
