@@ -36,7 +36,7 @@ class StationCreateView(CreateView):
 
 
 def about(request):
-    from .store_Sensor_Data_to_DB import sensor_data_handler
+    from .store_sensor_data_to_db import sensor_data_handler
     sensor_data_handler("Test MQTT About Dummy", "Dummy message About Page")
     context = {
         'title': 'About',
