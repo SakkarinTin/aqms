@@ -1,93 +1,228 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'weatherstation/main.css' %}">
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'weatherstation/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- Custom styles for this template-->
+  <link href="{% static 'weatherstation/css/sb-admin-2.min.css' %}" rel="stylesheet">
 
-    <!--    Font Awesome-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
+  <!--    Google Map Style-->
+  <style>
+  		#map {
+		    height: 420px;
+		}
+   </style>
 
-    {% if title %}
-        <title>Weather Station - {{ title }}</title>
-    {% else %}
-        <title>Weather Station</title>
-    {% endif %}
-
+   <title>Hexi Weather</title>
 
 </head>
-<body>
-    <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-        <div class="container">
-          <a class="navbar-brand mr-4" href="{% url 'index' %}">Weather Station</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarToggle">
-            <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{% url 'index' %}">Home</a>
-              <a class="nav-item nav-link" href="{% url 'about' %}">About</a>
-              <a class="nav-item nav-link" href="{% url 'add_station' %}">Add Station</a>
-            </div>
-            <!-- Navbar Right Side -->
-<!--            <div class="navbar-nav">-->
-<!--              <a class="nav-item nav-link" href="#">Login</a>-->
-<!--              <a class="nav-item nav-link" href="#">Register</a>-->
-<!--            </div>-->
-          </div>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+        <div class="sidebar-brand-icon">
+        	<i class="fas fa-h-square"></i>
         </div>
-      </nav>
-    </header>
+        <div class="sidebar-brand-text mx-3">HexiWeather</div>
+      </a>
 
-     <main role="main" class="container">
-      <div class="row">
-        <div class="col-md-8">
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'index' %}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard</span></a>
+      </li>
+
+      <!-- Nav Item - Charts -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'charts' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Charts</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
 
 
+      {% for data in stations %}
+      {% if data.id == 1 %}
 
+      <!-- Main Content -->
+      <div id="content">
 
-
-{% for data in stations %}
-<article class="media content-section">
-    <div class="media-body">
-        <div class="article-metadata">
-            <h2><a class="mr-2" href="#">{{ data.station_name  }} {{ forloop.counter }}</a></h2>
-        </div>
-        <p class="article-content">Temperature = {{ data.station_temperature }} °C</p>
-        <p class="article-content">Humidity = {{ data.station_humidity }} RH%</p>
-        <p class="article-content">Ambient Light = {{ data.station_ambient_light }}</p>
-        <p class="article-content">Pressure = {{ data.station_pressure }} PA</p>
-        <p class="article-content">Altitude = {{ data.station_altitude }} Meters</p>
-        <p class="article-content">Latitude = {{ data.station_latitude }}</p>
-        <p class="article-content">Longitude = {{ data.station_longitude }}</p>
+        <!-- Begin Page Content -->
         <div class="container-fluid">
-<!--    <div class="row">-->
-<!--        <div class="col">-->
-<!--            <h1 class="display-4">My Map</h1>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="row mb-2">-->
-<!--        <div class="col">-->
-<!--            <input class="form-control" id="search" type="text" placeholder="Search..." />-->
-<!--        </div>-->
-<!--    </div>-->
-           <div class="row">
-                <div class="col">
+
+          <!-- Page Heading -->
+          <p></p>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <h1 class="h6 mb-0 text-gray-800">Last Updated : {{ data.station_date_retrieved|date:"F d, Y - P" }}</h1>
+          </div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-primary text-uppercase mb-1">Temperature</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data.station_temperature }} °C</div>
+                    </div>
+                    <div class="col-auto">
+                    	<i class="fas fa-thermometer-half fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-success text-uppercase mb-1">Humidity</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data.station_humidity }} % RH</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-tint fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-danger text-uppercase mb-1">PM <sub>2.5</sub></div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ data.station_pm25 }} µg./m<sup>3</sup></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                    	<i class="fab fa-first-order-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+          </div>
+
+          <div class="row">
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-warning text-uppercase mb-1">Ambient Light</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data.station_ambient_light }} Lux</div>
+                    </div>
+                    <div class="col-auto">
+                    	<i class="far fa-lightbulb fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-info text-uppercase mb-1">Pressure</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data.station_pressure }} PA</div>
+                    </div>
+                    <div class="col-auto">
+                    	<i class="fas fa-sort-down fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-dark text-uppercase mb-1">Altitude</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ data.station_altitude }} Meters</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                    	<i class="fas fa-water fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!--  Google Maps-->
+          <div class="row">
+            <div class="col-xl-12 col-lg-7">
                     <div id="map"></div>
-               </div>
-             </div>
+            </div>
+          </div>
+
         </div>
-    </div>
-</article>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- End of Main Content -->
 
 <script type="text/javascript">
 var map;
@@ -95,8 +230,8 @@ var map;
 function createMap () {
   var options = {
     center: { lat: {{ data.station_latitude }}, lng: {{ data.station_longitude }} },
-    zoom: 16,
-//    draggable: false
+    zoom: 17,
+//  draggable: false
   };
 
   // New Map
@@ -106,7 +241,7 @@ function createMap () {
   var markers = [
     {
         coords: { lat: {{ data.station_latitude }}, lng: {{ data.station_longitude }} },
-        content: '<h4>Hexiwear location YES!</h4>'
+        content: '<h4>Hexiwear Location</h4>'
     }
   ];
 
@@ -133,49 +268,56 @@ function createMap () {
       });
     }
   }
-
-  var script = document.createElement('script');
-  script.src = "sample.js";
-  document.getElementsByTagName('head')[0].appendChild(script);
 }
 </script>
 
-{% endfor %}
+      {% endif %}
+      {% endfor %}
 
 
-
-
-
-
-
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; HexiWeather Website 2019</span>
+          </div>
         </div>
-<!--        <div class="col-md-4">-->
-<!--          <div class="content-section">-->
-<!--            <h3>Our Sidebar</h3>-->
-<!--            <p class='text-muted'>You can put any information here you'd like.-->
-<!--              <ul class="list-group">-->
-<!--                <li class="list-group-item list-group-item-light">Latest Posts</li>-->
-<!--                <li class="list- group-item list-group-item-light">Announcements</li>-->
-<!--                <li class="list-group-item list-group-item-light">Calendars</li>-->
-<!--                <li class="list-group-item list-group-item-light">etc</li>-->
-<!--              </ul>-->
-<!--            </p>-->
-<!--          </div>-->
-<!--        </div>-->
-      </div>
-    </main>
+      </footer>
+      <!-- End of Footer -->
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </div>
+    <!-- End of Content Wrapper -->
 
+  </div>
+  <!-- End of Page Wrapper -->
 
-    <!-- Google Maps scripts. -->
-    <!--  <script src="{% static 'js/map.js' %}"></script>-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'weatherstation/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'weatherstation/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'weatherstation/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'weatherstation/js/sb-admin-2.min.js' %}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{% static 'weatherstation/vendor/chart.js/Chart.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{% static 'weatherstation/js/demo/chart-area-demo.js' %}"></script>
+  <script src="{% static 'weatherstation/js/demo/chart-pie-demo.js' %}"></script>
+
+  <!-- Google Maps scripts. -->
+	<!--  <script src="{% static 'js/map.js' %}"></script>-->
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+
 
 </body>
-</html>
 
+</html>
