@@ -16,7 +16,7 @@ import json
 # MQTT Settings
 MQTT_Broker = "postman.cloudmqtt.com"
 MQTT_Port = 15589
-Keep_Alive_Interval = 45
+Keep_Alive_Interval = 60
 MQTT_Topic = "hexiwear/sensor"
 MQTT_Username = "nswnnfoc"
 MQTT_Password = "HbdSr-1z9oYG"

@@ -77,7 +77,7 @@
 
 
       {% for data in stations %}
-      {% if data.id == 1 %}
+      {% if forloop.first %}
 
       <!-- Main Content -->
       <div id="content">
@@ -88,8 +88,8 @@
           <!-- Page Heading -->
           <p></p>
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <h1 class="h6 mb-0 text-gray-800">Last Updated : {{ data.station_date_retrieved|date:"F d, Y - P" }}</h1>
+            <h1 class="h3 mb-0 text-gray-800">Dashboard : {{ data.id }}</h1>
+            <h1 class="h6 mb-0 text-gray-800">Last Updated : &nbsp;{{ data.station_date_retrieved|date:"d/m/y - P" }}</h1>
           </div>
 
           <!-- Content Row -->

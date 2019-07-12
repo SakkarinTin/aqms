@@ -19,10 +19,12 @@ class Station(models.Model):
     objects = GeoManager()
 
     def save(self, *args, **kwargs):
-        self.station_latitude = self.station_point.x
-        self.station_longitude = self.station_point.y
+        self.station_latitude = self.station_point.y
+        self.station_longitude = self.station_point.x
         super(Station, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.station_name
 
+    class Meta:
+        ordering = ['-station_date_retrieved']
