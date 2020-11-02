@@ -1,11 +1,17 @@
 from django.contrib.gis import admin
-from .models import Station
+from .models import Stations, StationLogs
 from leaflet.admin import LeafletGeoAdmin
 
 
 class StationAdmin(LeafletGeoAdmin):
-    list_display = ('station_name', 'station_point', 'station_date_retrieved')
+    list_display = ('station_id', 'description', 'battery_level')
 
 
-admin.site.register(Station, StationAdmin)
+class StationLogAdmin(LeafletGeoAdmin):
+    list_display = ('station_id', 'log_id', 'station_temperature', 'station_recorded_time')
+
+
+admin.site.register(Stations, StationAdmin)
+admin.site.register(StationLogs, StationLogAdmin)
+
 

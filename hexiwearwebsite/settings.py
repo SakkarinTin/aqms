@@ -12,6 +12,8 @@ if os.name == 'nt':
     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 
 
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'leaflet',
     'weatherstation.apps.WeatherstationConfig',
+    'users.apps.UsersConfig',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +82,7 @@ WSGI_APPLICATION = 'hexiwearwebsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'hexiwear',
+        'NAME': 'AQMS',
         'USER': 'postgres',
         'PASSWORD': '123qweasd',
         'HOST': 'localhost',
@@ -131,6 +135,7 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 3,
 }
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
 

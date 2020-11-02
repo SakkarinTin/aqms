@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Station
+from .models import Stations, StationLogs
 from django.utils import timezone
 from django.contrib.gis.geos import Point
 from django.views.generic import ListView, CreateView
@@ -10,27 +10,32 @@ import random, requests as req, json
 def index(request):
 
     context = {
-        'stations': Station.objects.all()
+        'stations': Stations.objects.all()
     }
 
     return render(request, 'weatherstation/index.html', context)
 
 
-# Home View
+# Index View
 class StationListView(ListView):
-    model = Station
+    model = Stations
     template_name = 'weatherstation/index.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'stations'
 
+    def get_context_data(self, **kwargs):
+        context = super(StationListView, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the log
+        context['data'] = Stations.objects.get(station_id=1).logs.last()
+        return context
 
 class ChartListView(ListView):
-    model = Station
+    model = Stations
     template_name = 'weatherstation/charts.html'
     context_object_name = 'stations'
 
 
 class StationCreateView(CreateView):
-    model = Station
+    model = Stations
     fields = ['station_name', 'station_temperature', 'station_humidity', 'station_ambient_light', 'station_pressure',
               'station_altitude', 'station_point', 'station_date_retrieved']
 
@@ -64,7 +69,7 @@ def add_station_form_submission(request):
     station_pm25 = random.randrange(100)
     station_date_retrieved = timezone.now()
 
-    station = Station(station_name=station_name,station_temperature=station_temperature,station_humidity=station_humidity,
+    station = Stations(station_name=station_name,station_temperature=station_temperature,station_humidity=station_humidity,
                       station_ambient_light=station_ambient_light,station_pressure=station_pressure,station_altitude=station_altitude,
                       station_point=station_point,station_pm25=station_pm25,station_date_retrieved=station_date_retrieved)
     station.save()

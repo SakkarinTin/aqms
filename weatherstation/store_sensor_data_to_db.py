@@ -1,66 +1,57 @@
-from .models import Station
+from .models import Stations, StationLogs
 from django.utils import timezone
 from django.contrib.gis.geos import Point
 import json
 
 
 # ===============================================================
-# Functions to push Sensor Data into Database
-def sensor_data_handler(topic, msg):
+# Functions to push Sensor Data Log into Database
+def sensor_data_handler(msg):
     # Fetch data from JSON message
-    hexiwear_data = json.loads(msg)
+    station_data = json.loads(msg)
 
-    station_name = "Hexiwear Station"
-    station_temperature = hexiwear_data['temperature']
-    station_humidity = hexiwear_data['humidity']
-    station_pressure = hexiwear_data['pressure']
-    station_altitude = hexiwear_data['altitude']
-    station_ambient_light = hexiwear_data['ambient_light']
-    station_pm25 = hexiwear_data['pm25']
-    latitude_value = hexiwear_data['latitude']
-    longitude_value = hexiwear_data['longitude']
-    station_point = Point(longitude_value, latitude_value)
-    station_date_retrieved = timezone.localtime(timezone.now())
+    station_id = int(station_data['station_id'])
+    temperature = float(station_data['temperature'])
+    humidity = float(station_data['humidity'])
+    pm10 = int(station_data['pm10'])
+    pm25 = int(station_data['pm25'])
+    latitude = float(station_data['latitude'])
+    longitude = float(station_data['longitude'])
+    point = Point(longitude, latitude)
+    timestamp = timezone.localtime(timezone.now())
 
-    new_station = Station(station_name=station_name, station_temperature=station_temperature,
-                      station_humidity=station_humidity,station_ambient_light=station_ambient_light,
-                      station_pressure=station_pressure,station_altitude=station_altitude,
-                      station_point=station_point, station_pm25=station_pm25, station_date_retrieved=station_date_retrieved)
+    new_log = StationLogs(station_temperature=temperature, station_humidity=humidity,
+                          station_pm10=pm10, station_pm25=pm25, station_pm1=0,
+                          station_latitude=latitude, station_longitude=longitude, station_point=point,
+                          station_recorded_time=timestamp, station_id=station_id)
 
-    # Push new data into Database Table
-    new_station.save()
+    # Push new log into Database Table
+    new_log.save(force_insert=True)
+
+    # # Update Station Object of the log
+    # station = Stations.objects.get(station_id=station_id)
+    # station.battery_level = 100
+    #
+    # # Save into Database Table
+    # station.save()
 
 
 # ===============================================================
-# Functions to push Sensor Data into Database
+# Functions to Update Station Battery Level into Database
 def sensor_data_handler_update(topic, msg):
-    # Get Station data from Database
-    stations = Station.objects.all()
-    updated_station = stations.get(id=1)
 
     # Fetch data from JSON message
-    hexiwear_data = json.loads(msg)
-    temperature_value = hexiwear_data['temperature']
-    humidity_value = hexiwear_data['humidity']
-    pressure_value = hexiwear_data['pressure']
-    altitude_value = hexiwear_data['altitude']
-    ambient_light_value = hexiwear_data['ambient_light']
-    pm25_value = hexiwear_data['pm25']
-    latitude_value = hexiwear_data['latitude']
-    longitude_value = hexiwear_data['longitude']
+    station_data = json.loads(msg)
+    station_id = station_data['station_id']
+    battery_level = station_data['battery_level']
+
+    # Get Station data from Database
+    update_station = Stations.objects.get(station_id=station_id)
 
     #  Update Station Data
-    updated_station.station_name = "Hexiwear Station"
-    updated_station.station_temperature = temperature_value
-    updated_station.station_humidity = humidity_value
-    updated_station.station_pressure = pressure_value
-    updated_station.station_altitude = altitude_value
-    updated_station.station_ambient_light = ambient_light_value
-    updated_station.station_pm25 = pm25_value
-    updated_station.station_point = Point(latitude_value, longitude_value)
-    updated_station.station_date_retrieved = timezone.now()
+    update_station.battery_level = battery_level
 
     # Save into Database Table
-    updated_station.save()
+    update_station.save()
 
 

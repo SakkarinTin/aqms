@@ -4,6 +4,7 @@
 
 <head>
 
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,14 +18,22 @@
   <!-- Custom styles for this template-->
   <link href="{% static 'weatherstation/css/sb-admin-2.min.css' %}" rel="stylesheet">
 
-  <!--    Google Map Style-->
+  <!--  Additional Custom Style-->
   <style>
   		#map {
 		    height: 420px;
+		    border: 1px solid grey;
 		}
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+
+        }
    </style>
 
-   <title>Hexi Weather</title>
+   <title>Air Quality Monitoring System</title>
 
 </head>
 
@@ -39,9 +48,9 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
         <div class="sidebar-brand-icon">
-        	<i class="fas fa-h-square"></i>
+        	<i class="fas fa-font"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">HexiWeather</div>
+        <div class="sidebar-brand-text mx-3">Air Quality Monitoring</div>
       </a>
 
       <!-- Divider -->
@@ -76,8 +85,6 @@
     <div id="content-wrapper" class="d-flex flex-column">
 
 
-      {% for data in stations %}
-      {% if forloop.first %}
 
       <!-- Main Content -->
       <div id="content">
@@ -88,15 +95,14 @@
           <!-- Page Heading -->
           <p></p>
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard : {{ data.id }}</h1>
-            <h1 class="h6 mb-0 text-gray-800">Last Updated : &nbsp;{{ data.station_date_retrieved|date:"d/m/y - P" }}</h1>
+            <h1 class="h3 mb-0 text-gray-800">Station {{ data.station_id }}</h1>
+            <h1 class="h6 mb-0 text-gray-800">Last Updated : &nbsp;{{ data.station_recorded_time|date:"d/m/y - P" }}</h1>
           </div>
 
           <!-- Content Row -->
           <div class="row">
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
+            <div class="col-xs col-md-3">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -112,8 +118,8 @@
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="col-xs col-md-3">
               <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -129,8 +135,27 @@
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
+            <div class="col-xs col-md-3">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-lg font-weight-bold text-danger text-uppercase mb-1">PM <sub>10</sub></div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ data.station_pm10 }} µg./m<sup>3</sup></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                    	<i class="fab fa-first-order-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs col-md-3">
               <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -150,79 +175,105 @@
               </div>
             </div>
 
-            
           </div>
 
-          <div class="row">
+<!--           Row of Grafana value panels -->
+          <div class="row" style="margin-top:10px;">
 
-            <!-- Pending Requests Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-lg font-weight-bold text-warning text-uppercase mb-1">Ambient Light</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data.station_ambient_light }} Lux</div>
-                    </div>
-                    <div class="col-auto">
-                    	<i class="far fa-lightbulb fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
+<!--            Temperature -->
+            <div class="col-xs col-md-3">
+              <div class="card border-left-primary shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577116349944&to=1577173134225&panelId=20"
+                      frameborder="4"></iframe>
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-lg font-weight-bold text-info text-uppercase mb-1">Pressure</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data.station_pressure }} PA</div>
-                    </div>
-                    <div class="col-auto">
-                    	<i class="fas fa-sort-down fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
+<!--            Humidity -->
+            <div class="col-xs col-md-3 ">
+              <div class="card border-left-success shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577116349944&to=1577173134225&panelId=21"
+                      frameborder="4"></iframe>
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-dark shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-lg font-weight-bold text-dark text-uppercase mb-1">Altitude</div>
-                      <div class="row no-gutters align-items-center">
-                        <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ data.station_altitude }} Meters</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-auto">
-                    	<i class="fas fa-water fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
+<!--            PM2.5 -->
+            <div class="col-xs col-md-3">
+              <div class="card border-left-danger shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577116349944&to=1577173134225&panelId=23"
+                      frameborder="4"></iframe>
+              </div>
+            </div>
+
+<!--            PM10 -->
+            <div class="col-xs col-md-3">
+              <div class="card border-left-danger shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577116349944&to=1577173134225&panelId=22"
+                      frameborder="4"></iframe>
               </div>
             </div>
 
           </div>
 
-          <!--  Google Maps-->
-          <div class="row">
+          <!-- Row of Grafana graphs -->
+            <div class="row" style="margin-top:10px;">
+
+            <div class="col-xs col-md-3">
+              <div class="card border-left-primary shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577109217346&to=1577210376211&panelId=2"
+                      frameborder="4"></iframe>
+              </div>
+            </div>
+
+            <div class="col-xs col-md-3">
+              <div class="card border-left-success shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577109217346&to=1577210376211&panelId=4"
+                      frameborder="4"></iframe>
+              </div>
+            </div>
+
+            <div class="col-xs col-md-3">
+              <div class="card border-left-danger shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577116349944&to=1577173134225&panelId=6"
+                      frameborder="4"></iframe>
+              </div>
+            </div>
+
+            <div class="col-xs col-md-3">
+              <div class="card border-left-danger shadow h-100 py-2">
+              <iframe
+                      src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577116349944&to=1577173134225&panelId=10"
+                      frameborder="4"></iframe>
+              </div>
+            </div>
+
+            </div>
+
+
+          <!--  Google Maps -->
+          <div class="row" style="margin-top:10px;">
             <div class="col-xl-12 col-lg-7">
                     <div id="map"></div>
             </div>
           </div>
 
+          <div class="row" id="map" style="margin-top:10px;">
+                <iframe src="http://localhost:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&from=1577109217346&to=1577210376211&theme=light&panelId=18"
+                    frameborder="4"></iframe>
+          </div>
+
         </div>
         <!-- /.container-fluid -->
-      </div>
+
       <!-- End of Main Content -->
+
+
 
 <script type="text/javascript">
 var map;
@@ -239,10 +290,18 @@ function createMap () {
 
   // Add Marker
   var markers = [
+
+    {% for station in stations %}
+    {% for log in station.logs.all %}
+    {% if forloop.last %}
     {
-        coords: { lat: {{ data.station_latitude }}, lng: {{ data.station_longitude }} },
-        content: '<h4>Hexiwear Location</h4>'
-    }
+        coords: { lat: {{ log.station_latitude }}, lng: {{ log.station_longitude }} },
+        content: '<h4>Station: {{ station.station_id }}</h4>'
+    },
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+
   ];
 
   // Loop through markers
@@ -271,15 +330,14 @@ function createMap () {
 }
 </script>
 
-      {% endif %}
-      {% endfor %}
+
 
 
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; HexiWeather Website 2019</span>
+            <span>Copyright &copy; Air Quality Monitoring System Website 2019</span>
           </div>
         </div>
       </footer>
