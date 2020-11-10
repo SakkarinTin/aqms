@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'weatherstation/main.css' %}">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!--    Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
+
+    <!--    Google Map Style-->
+    <style>
+    #map {
+        height: 320px;
+    }
+    </style>
+
+    {% if title %}
+        <title>Weather Station - {{ title }}</title>
+    {% else %}
+        <title>Weather Station</title>
+    {% endif %}
+
+
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-2" href="{% url 'index' %}">Weather Station</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+<!--              <a class="nav-item nav-link" href="{% url 'index' %}">Home</a>-->
+<!--              <a class="nav-item nav-link" href="{% url 'about' %}">About</a>-->
+<!--              <a class="nav-item nav-link" href="{% url 'add_station' %}">Add Station</a>-->
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+     <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+
+
+
+<!--====================================================================================================================================-->
+
+
+{% for data in stations %}
+{% if data.id == 1 %}
+
+<article class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <h2 class="mr-2">{{ data.station_name  }}</h2>
+        </div>
+        <p class="article-content"><b>Temperature</b> = {{ data.station_temperature }} °C</p>
+        <p class="article-content"><b>Humidity</b> = {{ data.station_humidity }}%</p>
+        <p class="article-content"><b>Ambient Light</b> = {{ data.station_ambient_light }} Lux</p>
+        <p class="article-content"><b>Pressure</b> = {{ data.station_pressure }} PA</p>
+        <p class="article-content"><b>Altitude</b> = {{ data.station_altitude }} Meters</p>
+        <p class="article-content"><b>PM<sub>2.5</sub></b> = {{ data.station_pm25 }} µg./m<sup>3</sup> (Above 50 is bad)</p>
+        <div class="container-fluid">
+           <div class="row">
+                <div class="col">
+                    <div id="map"></div>
+               </div>
+             </div>
+        </div>
+    </div>
+</article>
+
+
+<script type="text/javascript">
+var map;
+
+function createMap () {
+  var options = {
+    center: { lat: {{ data.station_latitude }}, lng: {{ data.station_longitude }} },
+    zoom: 17,
+//    draggable: false
+  };
+
+  // New Map
+  map = new google.maps.Map(document.getElementById('map'), options);
+
+  // Add Marker
+  var markers = [
+    {
+        coords: { lat: {{ data.station_latitude }}, lng: {{ data.station_longitude }} },
+        content: '<h4>Hexiwear Location</h4>'
+    }
+  ];
+
+  // Loop through markers
+  for(var i = 0; i < markers.length; i++){
+    addMarker(markers[i]);
+  }
+
+  // Add Marker Function
+  function addMarker(props){
+    var marker = new google.maps.Marker({
+        position: props.coords,
+        map: map,
+    });
+
+    // Check content
+    if(props.content){
+        var infoWindow = new google.maps.InfoWindow({
+            content: props.content
+        })
+
+        marker.addListener('click', function(){
+            infoWindow.open(map, marker);
+      });
+    }
+  }
+}
+</script>
+
+{% endif %}
+{% endfor %}
+
+
+
+<!--====================================================================================================================================-->
+
+
+        </div>
+      </div>
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+    <!-- Google Maps scripts. -->
+    <!--  <script src="{% static 'js/map.js' %}"></script>-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+
+</body>
+</html>
+
