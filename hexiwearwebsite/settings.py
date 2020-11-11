@@ -1,4 +1,4 @@
-
+import django_heroku
 import os
 if os.name == 'nt':
     import platform
@@ -27,7 +27,7 @@ SECRET_KEY = 'sll2)-*2a_g#pbnmun2(0xj(@fjzlv1^_p!)2qbc)ch+!o)byz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -139,5 +139,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
 
-# GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
+GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
+
+# Activate Django-heroku.
+django_heroku.settings(locals())
 
