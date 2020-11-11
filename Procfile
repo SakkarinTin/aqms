@@ -1,1 +1,1 @@
-web: gunicorn hexiwearwebsite.wsgi
+web: gunicorn hexiwearwebsite.wsgi --log-file -
