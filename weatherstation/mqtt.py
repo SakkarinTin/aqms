@@ -4,12 +4,14 @@ from requests.auth import HTTPBasicAuth
 import json
 
 # MQTT Settings
-# MQTT_Broker = "postman.cloudmqtt.com"
-MQTT_Broker = "192.168.43.95"
+# CloudMQTT Broker
+MQTT_Broker = "postman.cloudmqtt.com"
+MQTT_Port = 15589
+# Local Mosquitto MQTT Broker
+# MQTT_Broker = "192.168.43.95"
+# MQTT_Port = 1883
 MQTT_Username = "nswnnfoc"
 MQTT_Password = "HbdSr-1z9oYG"
-# MQTT_Port = 15589
-MQTT_Port = 1883
 Keep_Alive_Interval = 60
 MQTT_Topic = "AQMS/#"
 
