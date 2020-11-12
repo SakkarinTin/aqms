@@ -140,7 +140,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
 
-GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
+GDAL_LIBRARY_PATH = r'\OSGeo4W64\bin\gdal204.dll'
 
 # Activate Django-heroku.
 django_heroku.settings(locals())
