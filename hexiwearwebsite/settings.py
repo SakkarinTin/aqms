@@ -3,15 +3,15 @@ import os
 current_path = os.getcwd()
 if os.name == 'nt':
     import platform
-    OSGEO4W = r"\OSGeo4W"
+    OSGEO4W = r"/OSGeo4W"
     OSGEO4W = current_path + OSGEO4W
     if '64' in platform.architecture()[0]:
         OSGEO4W += "64"
     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
     os.environ['OSGEO4W_ROOT'] = OSGEO4W
-    os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
-    os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
-    os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
+    os.environ['GDAL_DATA'] = OSGEO4W + r"/share/gdal"
+    os.environ['PROJ_LIB'] = OSGEO4W + r"/share/proj"
+    os.environ['PATH'] = OSGEO4W + r"/bin;" + os.environ['PATH']
 
 
 
@@ -141,7 +141,7 @@ LEAFLET_CONFIG = {
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
-GDAL_LIBRARY_PATH = current_path + r'\OSGeo4W64\bin\gdal204.dll'
+GDAL_LIBRARY_PATH = current_path + r'/OSGeo4W64/bin/gdal204.dll'
 
 # Activate Django-heroku.
 django_heroku.settings(locals())
