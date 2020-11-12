@@ -12,7 +12,7 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 
-'''
+
 current_path = os.getcwd()
 if os.name == 'nt':
     import platform
@@ -24,7 +24,7 @@ if os.name == 'nt':
     os.environ['GDAL_DATA'] = OSGEO4W + r"/share/gdal"
     os.environ['PROJ_LIB'] = OSGEO4W + r"/share/proj"
     os.environ['PATH'] = OSGEO4W + r"/bin;" + os.environ['PATH']
-
+'''
 
 
 
@@ -155,7 +155,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
 #GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
-GDAL_LIBRARY_PATH = current_path + r'/OSGeo4W64/bin/gdal204.dll'
+#GDAL_LIBRARY_PATH = current_path + r'/OSGeo4W64/bin/gdal204.dll'
 #GDAL_LIBRARY_PATH = r'/app/OSGeo4W64/bin/gdal204.dll'
 
 # Activate Django-heroku.
