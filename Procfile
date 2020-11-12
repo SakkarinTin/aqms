@@ -1,1 +1,1 @@
-web: gunicorn hexiwearwebsite.wsgi --log-file -
+web: waitress-serve --port=$PORT hexiwearwebsite.wsgi:application
