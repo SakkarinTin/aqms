@@ -25,7 +25,6 @@ entrypoints==0.3
 et-xmlfile==1.0.1
 filelock==3.0.12
 Flask==1.1.2
-GDAL
 gunicorn==20.0.4
 html5lib==1.1
 idna==2.8

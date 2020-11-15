@@ -155,6 +155,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
 #GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
+GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
 #GDAL_LIBRARY_PATH = current_path + r'/OSGeo4W64/bin/gdal204.dll'
 #GDAL_LIBRARY_PATH = r'/app/OSGeo4W64/bin/gdal204.dll'
 
