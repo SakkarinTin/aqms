@@ -1,6 +1,6 @@
 import django_heroku
 import os
-
+'''
 if os.name == 'nt':
     import platform
     OSGEO4W = r"C:\OSGeo4W"
@@ -12,7 +12,7 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 
-'''
+
 
 current_path = os.getcwd()
 if os.name == 'nt':
@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'hexiwearwebsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'AQMS',
+        'NAME': 'aqmsdb',
         'USER': 'postgres',
-        'PASSWORD': '123qweasd',
+        'PASSWORD': '123qweasdE#$R',
         'HOST': 'localhost',
     }
 }
@@ -155,12 +155,9 @@ LEAFLET_CONFIG = {
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # [ERROR] Could not find the GDAL library
-GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
-#GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+#GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
+GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
-#GDAL_LIBRARY_PATH = current_path + r'/OSGeo4W64/bin/gdal204.dll'
-#GDAL_LIBRARY_PATH = r'/app/OSGeo4W64/bin/gdal204.dll'
 
 # Activate Django-heroku.
 django_heroku.settings(locals())
-
