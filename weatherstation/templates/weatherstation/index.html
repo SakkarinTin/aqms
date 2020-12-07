@@ -1,0 +1,833 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'weatherstation/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'weatherstation/css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+  <!-- jQuery library-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!--  Additional Custom Style-->
+  <style>
+  		#map {
+		    height: 420px;
+		    border: 1px solid grey;
+		  }
+
+      iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+      }
+
+      [hidden] {
+          display: none !important;
+      }
+   </style>
+
+   <title>Air Quality Monitoring System</title>
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+        <div class="sidebar-brand-icon">
+        	<i class="fas fa-font"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Air Quality Monitoring</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'index' %}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard</span></a>
+      </li>
+
+      <!-- Nav Item - Charts -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'charts' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Charts</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          <!-- Page Heading -->
+          <p></p>
+          <button id="station_switch">Switch Station</button>
+          {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+          {% for station in station_list %}
+          {% for log in station.list %}
+          {% if forloop.last %}
+          {% if station.grouper == 1 %}
+              <div id="head_station1" class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h3>Station {{ log.station_id }}</h3>
+                <h5>Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h5>
+              </div>
+          {% elif station.grouper == 2 %}
+              <div hidden id="head_station2" class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h3>Station {{ log.station_id }}</h3>
+                <h5>Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h5>
+              </div>
+          {% endif %}
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+
+          <!--  Google Maps -->
+          <div class="row" style="margin-top:10px;">
+            <div class="col-xl-12 col-lg-7">
+                    <div id="map"></div>
+            </div>
+          </div>
+
+
+          <!-- Content Row -->
+
+          <!-- Data Rows of Station 1 -->
+          <div id="body_station1">
+            <div class="row">
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-primary text-uppercase mb-1">Temperature</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="temp_div">
+                          <!-- Regroup by station_id -->
+                          {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                            <!-- Loop by station_id -->
+                            {% for station in station_list %}
+                                <!-- Select station_id -->
+                                {% if station.grouper == 1 %}
+                                    <!-- Loop all logs in station_id -->
+                                    {% for log in station.list %}
+                                        <!-- Select only the last value -->
+                                        {% if forloop.last %}
+                                            {{ log.station_temperature }} °C
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="col-auto">
+                      	<i class="fas fa-thermometer-half fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-success text-uppercase mb-1">Humidity</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          <!-- Regroup by station_id -->
+                          {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                            <!-- Loop by station_id -->
+                            {% for station in station_list %}
+                                <!-- Select station_id -->
+                                {% if station.grouper == 1 %}
+                                    <!-- Loop all logs in station_id -->
+                                    {% for log in station.list %}
+                                        <!-- Select only the last value -->
+                                        {% if forloop.last %}
+                                            {{ log.station_humidity }} % RH
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-tint fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-danger text-uppercase mb-1">PM <sub>2.5</sub></div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                              <!-- Regroup by station_id -->
+                              {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                                <!-- Loop by station_id -->
+                                {% for station in station_list %}
+                                    <!-- Select station_id -->
+                                    {% if station.grouper == 1 %}
+                                        <!-- Loop all logs in station_id -->
+                                        {% for log in station.list %}
+                                            <!-- Select only the last value -->
+                                            {% if forloop.last %}
+                                                {{ log.station_pm25 }} µg./m<sup>3</sup>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                      	<i class="fab fa-first-order-alt fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-danger text-uppercase mb-1">PM <sub>10</sub></div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                              <!-- Regroup by station_id -->
+                              {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                                <!-- Loop by station_id -->
+                                {% for station in station_list %}
+                                    <!-- Select station_id -->
+                                    {% if station.grouper == 1 %}
+                                        <!-- Loop all logs in station_id -->
+                                        {% for log in station.list %}
+                                            <!-- Select only the last value -->
+                                            {% if forloop.last %}
+                                                {{ log.station_pm10 }} µg./m<sup>3</sup>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                      	<i class="fab fa-first-order-alt fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+  <!-- ====================================================================================================================================================== -->
+  <!-- ====================================================================================================================================================== -->
+
+
+            <!-- Row of Grafana value panels -->
+            <div class="row">
+
+             <!-- Temperature -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-primary shadow h-100 py-2">
+                <iframe id="if"
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=20"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+             <!-- Humidity -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-success shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=21"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+             <!-- PM2.5 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=23"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+             <!-- PM10 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=27"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+            </div>
+
+  <!-- ====================================================================================================================================================== -->
+  <!-- ====================================================================================================================================================== -->
+
+
+            <!-- Row of Grafana graphs -->
+            <div class="row">
+
+                <!-- Temperature -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-primary shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=2"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+              <!-- Humidity -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-success shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=4"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+              <!-- PM 2.5 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=6"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+              <!-- PM 10 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=26"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- End of Data Rows of Station 1 -->
+
+
+          <!-- Data Rows of Station 2 -->
+          <div hidden id="body_station2">
+            <div class="row">
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-primary text-uppercase mb-1">Temperature</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="temp_div">
+                          <!-- Regroup by station_id -->
+                          {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                            <!-- Loop by station_id -->
+                            {% for station in station_list %}
+                                <!-- Select station_id -->
+                                {% if station.grouper == 2 %}
+                                    <!-- Loop all logs in station_id -->
+                                    {% for log in station.list %}
+                                        <!-- Select only the last value -->
+                                        {% if forloop.last %}
+                                            {{ log.station_temperature }} °C
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="col-auto">
+                      	<i class="fas fa-thermometer-half fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-success text-uppercase mb-1">Humidity</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          <!-- Regroup by station_id -->
+                          {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                            <!-- Loop by station_id -->
+                            {% for station in station_list %}
+                                <!-- Select station_id -->
+                                {% if station.grouper == 2 %}
+                                    <!-- Loop all logs in station_id -->
+                                    {% for log in station.list %}
+                                        <!-- Select only the last value -->
+                                        {% if forloop.last %}
+                                            {{ log.station_humidity }} % RH
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-tint fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-danger text-uppercase mb-1">PM <sub>2.5</sub></div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                              <!-- Regroup by station_id -->
+                              {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                                <!-- Loop by station_id -->
+                                {% for station in station_list %}
+                                    <!-- Select station_id -->
+                                    {% if station.grouper == 2 %}
+                                        <!-- Loop all logs in station_id -->
+                                        {% for log in station.list %}
+                                            <!-- Select only the last value -->
+                                            {% if forloop.last %}
+                                                {{ log.station_pm25 }} µg./m<sup>3</sup>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                      	<i class="fab fa-first-order-alt fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-lg font-weight-bold text-danger text-uppercase mb-1">PM <sub>10</sub></div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                              <!-- Regroup by station_id -->
+                              {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+                                <!-- Loop by station_id -->
+                                {% for station in station_list %}
+                                    <!-- Select station_id -->
+                                    {% if station.grouper == 2 %}
+                                        <!-- Loop all logs in station_id -->
+                                        {% for log in station.list %}
+                                            <!-- Select only the last value -->
+                                            {% if forloop.last %}
+                                                {{ log.station_pm10 }} µg./m<sup>3</sup>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                      	<i class="fab fa-first-order-alt fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+  <!-- ====================================================================================================================================================== -->
+  <!-- ====================================================================================================================================================== -->
+
+
+            <!-- Row of Grafana value panels -->
+            <div class="row">
+
+             <!-- Temperature -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-primary shadow h-100 py-2">
+                <iframe id="if"
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=31"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+             <!-- Humidity -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-success shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=32"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+             <!-- PM2.5 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=33"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+             <!-- PM10 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=34"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+            </div>
+
+  <!-- ====================================================================================================================================================== -->
+  <!-- ====================================================================================================================================================== -->
+
+
+            <!-- Row of Grafana graphs -->
+            <div class="row">
+
+                <!-- Temperature -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-primary shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=35"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+              <!-- Humidity -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-success shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=36"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+              <!-- PM 2.5 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=37"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+              <!-- PM 10 -->
+              <div class="col-xs col-md-3" style="margin-top:10px;">
+                <div class="card border-left-danger shadow h-100 py-2">
+                <iframe
+                        src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=38"
+                        frameborder="4"></iframe>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- End of Data Rows of Station 2 -->
+
+
+
+        </div>
+        <!-- /.container-fluid -->
+
+      <!-- End of Main Content -->
+
+<!-- ====================================================================================================================================================== -->
+<!-- ============================   JavaScript     ====================================================================== -->
+<!-- ====================================================================================================================================================== -->
+
+
+
+
+<!-- Google Map JavaScript -->
+<script type="text/javascript">
+
+// var $head = $('#head_station1').show();
+// $head.hide();
+$("#station_switch").click(function(){
+  toggle_hidden_by_id("head_station1")
+  toggle_hidden_by_id("head_station2")
+  toggle_hidden_by_id("body_station1")
+  toggle_hidden_by_id("body_station2")
+  // $head.hide();
+});
+
+function toggle_hidden_by_id(id) {
+  var div = document.getElementById(id);
+  if (div.hidden == true) {
+    div.hidden = false;
+  } else {
+    div.hidden = true;
+  }
+}
+
+// $('#head_station1').show();
+// $('#station_switch').click(function() {
+//   var id = $(this).attr('id');
+//   head_defualt.hide();
+//   $(id).show();
+// });
+
+// Function for Calculate the center point of multiple latitude/longitude coordinate pairs
+function rad2degr(rad) { return rad * 180 / Math.PI; }
+function degr2rad(degr) { return degr * Math.PI / 180; }
+
+/**
+ * @param latLngInDeg array of arrays with latitude and longtitude
+ *   pairs in degrees. e.g. [[latitude1, longtitude1], [latitude2
+ *   [longtitude2] ...]
+ *
+ * @return array with the center latitude longtitude pairs in
+ *   degrees.
+ */
+
+ function getLatLngCenter(latLngInDegr) {
+    var LATIDX = 0;
+    var LNGIDX = 1;
+    var sumX = 0;
+    var sumY = 0;
+    var sumZ = 0;
+
+    for (var i=0; i<latLngInDegr.length; i++) {
+        var lat = degr2rad(latLngInDegr[i][LATIDX]);
+        var lng = degr2rad(latLngInDegr[i][LNGIDX]);
+        // sum of cartesian coordinates
+        sumX += Math.cos(lat) * Math.cos(lng);
+        sumY += Math.cos(lat) * Math.sin(lng);
+        sumZ += Math.sin(lat);
+    }
+
+    var avgX = sumX / latLngInDegr.length;
+    var avgY = sumY / latLngInDegr.length;
+    var avgZ = sumZ / latLngInDegr.length;
+
+    // convert average x, y, z coordinate to latitude and longtitude
+    var lng = Math.atan2(avgY, avgX);
+    var hyp = Math.sqrt(avgX * avgX + avgY * avgY);
+    var lat = Math.atan2(avgZ, hyp);
+
+    return ([rad2degr(lat), rad2degr(lng)]);
+}
+
+// Create Center Point Between Station Locations
+var points = [
+
+  {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+  {% for station in station_list %}
+  {% for log in station.list %}
+  {% if forloop.last %}
+      [{{ log.station_latitude }}, {{ log.station_longitude }}],
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+
+];
+var center_point = getLatLngCenter(points);
+
+// Calculate The Zoom Level
+var GLOBE_WIDTH = 256; // a constant in Google's map projection
+if (points[0][1] < points[1][1]) {
+  var west = points[0][1];
+  var east = points[1][1];
+} else {
+  var west = points[1][1];
+  var east = points[0][1];
+}
+var angle = east - west;
+if (angle < 0) {
+  angle += 360;
+}
+var container = document.getElementById('map');
+var width_pixel = container.offsetWidth;
+var zoom_level = Math.round(Math.log(width_pixel * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+
+
+var map;
+
+function createMap () {
+
+  var options = {
+    center: { lat: center_point[0], lng: center_point[1] },
+    zoom: zoom_level,
+//  draggable: false
+  };
+
+  // New Map
+  map = new google.maps.Map(document.getElementById('map'), options);
+
+
+  // Add Marker
+  var markers = [
+
+    {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+    {% for station in station_list %}
+    {% for log in station.list %}
+    {% if forloop.last %}
+    {
+        coords: { lat: {{ log.station_latitude }}, lng: {{ log.station_longitude }} },
+        content: '<h4>Station: {{ log.station_id }}</h4>'
+    },
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+
+  ];
+
+  // Loop through markers
+  for(var i = 0; i < markers.length; i++){
+    addMarker(markers[i]);
+  }
+
+  // Add Marker Function
+  function addMarker(props){
+    var marker = new google.maps.Marker({
+        position: props.coords,
+        map: map,
+    });
+
+    // Check content
+    if(props.content){
+        var infoWindow = new google.maps.InfoWindow({
+            content: props.content
+        })
+
+        marker.addListener('click', function(){
+            infoWindow.open(map, marker);
+      });
+    }
+  }
+}
+
+</script>
+
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Air Quality Monitoring System Website 2019</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+  <!-- Load from unpkg -->
+  <script src="https://unpkg.com/htmx.org@1.0.1"></script>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'weatherstation/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'weatherstation/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'weatherstation/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'weatherstation/js/sb-admin-2.min.js' %}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{% static 'weatherstation/vendor/chart.js/Chart.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{% static 'weatherstation/js/demo/chart-area-demo.js' %}"></script>
+  <script src="{% static 'weatherstation/js/demo/chart-pie-demo.js' %}"></script>
+
+  <!-- Google Maps scripts. -->
+	<!--  <script src="{% static 'js/map.js' %}"></script>-->
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+
+
+</body>
+
+</html>

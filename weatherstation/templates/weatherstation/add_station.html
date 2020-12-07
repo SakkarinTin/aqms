@@ -1,0 +1,60 @@
+{% extends "weatherstation/base.html" %}
+{% block content %}
+<div class="container">
+       <table class="table table-striped">
+          <tbody>
+             <tr><h1 align="center">Add Station Form</h1>
+                <td colspan="1">
+                   <form class="well form-horizontal" method="post" action="/add_station_form_submission/">
+                      {% csrf_token %}
+                      <fieldset>
+                         <div class="form-group">
+                            <label class="col-md-4 control-label">Title</label>
+                            <div class="col-md-8 inputGroupContainer">
+                               <div class="input-group"><span class="input-group-addon"><i class="fa fa-file"></i></span><input name="station_name" placeholder="Name" class="form-control" required="true" value="" type="text"></div>
+                            </div>
+                         </div>
+                         <div class="form-group">
+                            <label class="col-md-4 control-label">Temperature</label>
+                            <div class="col-md-8 inputGroupContainer">
+                               <div class="input-group"><span class="input-group-addon"><i class="fa fa-thermometer-empty"></i></span><input name="station_temperature" placeholder="Temperature" class="form-control" required="true" value="" type="number" step="any"></div>
+                            </div>
+                         </div>
+                         <div class="form-group">
+                            <label class="col-md-4 control-label">Humidity</label>
+                            <div class="col-md-8 inputGroupContainer">
+                               <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-tint"></i></span><input name="station_humidity" placeholder="Humidity" class="form-control" required="true" value="" type="number" step="any"></div>
+                            </div>
+                         </div>
+                         <div class="form-group">
+                            <label class="col-md-4 control-label">Ambient Light</label>
+                            <div class="col-md-8 inputGroupContainer">
+                               <div class="input-group"><span class="input-group-addon"><i class="fa fa-lightbulb"></i></span><input name="station_ambient_light" placeholder="Ambient Light" class="form-control" required="true" value="" type="number"></div>
+                            </div>
+                         </div>
+                         <div class="form-group">
+                            <label class="col-md-4 control-label">Pressure</label>
+                            <div class="col-md-8 inputGroupContainer">
+                               <div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-arrow-down"></i></span><input name="station_pressure" placeholder="Pressure" class="form-control" required="true" value="" type="number" step="any"></div>
+                            </div>
+                         </div>
+                         <div class="form-group">
+                            <label class="col-md-4 control-label">Altitude</label>
+                            <div class="col-md-8 inputGroupContainer">
+                               <div class="input-group"><span class="input-group-addon"><i class="fa fa-anchor"></i></span><input name="station_altitude" placeholder="Altitude" class="form-control" required="true" value="" type="number" step="any"></div>
+                            </div>
+                         </div>
+                          <p align="center"><input class="btn btn-primary" type="submit" value="Submit"></p>
+                      </fieldset>
+                   </form>
+                </td>
+             </tr>
+          </tbody>
+       </table>
+    </div>
+
+{% load staticfiles %}
+<script src={% static "js/add_station.js" %} type="text/javascript"></script>
+
+{% endblock %}
+
