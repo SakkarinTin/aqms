@@ -1,4 +1,3 @@
-import django_heroku
 import os
 '''
 if os.name == 'nt':
@@ -159,6 +158,3 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 #GDAL_LIBRARY_PATH = r'C:\OSGeo4W64\bin\gdal204.dll'
 GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
-
-# Activate Django-heroku.
-django_heroku.settings(locals())
