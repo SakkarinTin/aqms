@@ -1,4 +1,6 @@
 import os
+
+# Fixed Bug for Windows
 '''
 if os.name == 'nt':
     import platform
@@ -40,7 +42,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'sll2)-*2a_g#pbnmun2(0xj(@fjzlv1^_p!)2qbc)ch+!o)byz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -143,7 +145,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "/var/www/staticfiles/")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = 'aqms/site/public/static'
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (13.7, 100.5),
