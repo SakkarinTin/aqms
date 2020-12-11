@@ -1,632 +1,327 @@
-{% load static %}
+{% extends "weatherstation/base.html" %}
 {% load humanize %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Air Quality Monitoring System | Dashboard</title>
-
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-date-range-picker/0.21.1/daterangepicker.min.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css">
-
-  <!--  Additional Custom Style-->
-  <style>
-    #map {
-      height: 250px;
-      border: 1px solid grey;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-  </style>
-
-
-</head>
-<body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
-
-  <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
-    </ul>
-
-    <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search by Station Number" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search" data-toggle="tooltip" data-placement="right" title="eg. 1, 2, .."></i>
-            <!-- <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="Search Stations by ID"></i> -->
-          </button>
-        </div>
-
-
-      </div>
-    </form>
-
-    <button id="station_switch">Select Station</button>
-
-    <!-- Right navbar links -->
-
-    <ul class="navbar-nav ml-auto">
-
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
-      </li>
-    </ul>
-  </nav>
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-
-    <!-- Brand Logo -->
-    <a href="{% url 'index' %}" class="brand-link logo-switch">
-      <div class="brand-image-xl logo-xs" style="left: 8px;top: 20px; font-weight:700;font-size:23px;">AQMS</div>
-      <div class="brand-image-xs logo-xl" style="left: 10px;top: 20px; font-weight:500;font-size:25px;"><strong>AirQuality</strong> <p style="display:inline;font-size:15px;">Monitoring System</p></div>
-      <!-- <img src="{% static 'img/logo-xs.png' %}/" alt="AQMS Logo Small" class="brand-image-xl logo-xs">       -->
-      <!-- <img src="{% static 'img/logo-xl.png' %}" alt="AQMS Logo Large" class="brand-image-xs logo-xl" style="left: 0px"> -->
-    </a>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% static 'img/user1.png' %}" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="{% url 'index' %}" class="d-block">Sakkarin Pumprajum</a>
-        </div>
-      </div>
-
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item">
-            <a href="{% url 'index' %}" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-              </p>
-            </a>
-          </li>
-
-        </ul>
-      </nav>
-      <!-- /.sidebar-menu -->
-    </div>
-    <!-- /.sidebar -->
-  </aside>
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+{% block content %}
 
 <!-- ==================================================================================================================== -->
 <!-- ======================================== Head Above Google Maps ==================================================== -->
 <!-- ==================================================================================================================== -->
 
-    <!-- Content Header (Page header) -->
+<!-- Content Header (Page header) -->
+{% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+{% for station in station_list %}
+{% for log in station.list %}
+{% if forloop.last %}
+
+
+
+
+
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+<!-- /.content-header -->
+
+
+<!-- ================================================================================================================== -->
+<!-- =========================================== Main Content ========================================================= -->
+<!-- ================================================================================================================== -->
+
+<section class="content" style="font-family: Arial, Helvetica, sans-serif">
+  <div class="container-fluid">
+
+
+    <!-- ============================================================================================================ -->
+    <!-- ===================================== Google Maps ========================================================== -->
+    <!-- ============================================================================================================ -->
+
+    <!--  Google Maps -->
+    <div class="row" style="margin-top:10px;">
+      <div class="col-xl-12 col-lg-7">
+        <div id="map"></div>
+      </div>
+    </div>
+
+
+    <!-- Small boxes (Stat box) -->
+    <p></p>
+
+    <!-- ============================================================================================================ -->
+    <!-- ================================== Start of Station 1 ====================================================== -->
+    <!-- ================================= Data Information Label =================================================== -->
+    <!-- ============================================================================================================ -->
+
+    <div class="station1">
+
+    <!-- Regroup by station_id -->
     {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+    <!-- Loop by station_id -->
     {% for station in station_list %}
+    <!-- Select station_id -->
+    {% if station.grouper == 1 %}
+    <!-- Loop all logs in station_id -->
     {% for log in station.list %}
+    <!-- Select only the last value -->
     {% if forloop.last %}
 
+    <!-- Head Label -->
+    <div class="station" id="head_station1" style="display:flex; margin-bottom:10px;">
+      <div class="col-sm-12">
+        <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
+        <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+      </div>
+    </div><!-- /.row -->
 
-    <section class="content">
-      <div class="container-fluid">
 
-        <!-- Condition 1 -->
-        {% if station.grouper == 1 %}
+    <div class="row">
 
-        <div id="head_station1" style="display:flex;">
-          <div class="col-sm-12">
-            <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
-            <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+      <!-- Temperature -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-success"><i class="fas fa-thermometer-half"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #00B743;"><strong>Temperature</strong></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_temperature|floatformat:1  }}
+              <p style="display:inline;font-size:22px;">°C</p>
+            </span>
           </div>
-        </div><!-- /.row -->
+        </div>
+      </div>
 
-        <!-- Condition 2 -->
-        {% elif station.grouper == 2 %}
-
-        <div id="head_station2" style="display:none;">
-          <div class="col-sm-12">
-            <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
-            <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+      <!-- Humidity -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-info"><i class="fas fa-tint"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #00A3BA;"><strong>Humidity</strong></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_humidity|floatformat:1 }}
+              <p style="display:inline;font-size:22px;">%</p>
+            </span>
           </div>
-        </div><!-- /.row -->
+        </div>
+      </div>
 
-        {% endif %}
+      <!-- PM 2.5 -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #6B747D;"><strong>PM <sub>2.5</sub></strong><i id="pm-tooltip" style="float:right;" class="fas fa-info-circle pm25-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }}
+              <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
+            </span>
+          </div>
+        </div>
+      </div>
 
-      </div><!-- /.container-fluid -->
-    </section>
-
+      <!-- PM 10 -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #6B747D;"><strong>PM <sub>10</sub></strong><i style="float:right;" class="fas fa-info-circle pm10-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }}
+              <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {% endif %}
     {% endfor %}
-    {% endfor %}
-
-    <!-- /.content-header -->
-
-
-    <!-- ================================================================================================================== -->
-    <!-- =========================================== Main Content ========================================================= -->
-    <!-- ================================================================================================================== -->
-
-    <section class="content">
-      <div class="container-fluid">
-
-
-        <!-- ============================================================================================================ -->
-        <!-- ===================================== Google Maps ========================================================== -->
-        <!-- ============================================================================================================ -->
-
-        <!--  Google Maps -->
-        <div class="row" style="margin-top:10px;">
-          <div class="col-xl-12 col-lg-7">
-            <div id="map"></div>
-          </div>
-        </div>
-
-
-        <!-- Small boxes (Stat box) -->
-        <p></p>
-
-        <!-- ============================================================================================================ -->
-        <!-- ================================= Data Information Label =================================================== -->
-        <!-- ============================================================================================================ -->
-
-        <!-- Regroup by station_id -->
-        {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
-        <!-- Loop by station_id -->
-        {% for station in station_list %}
-        <!-- Select station_id -->
-        {% if station.grouper == 1 %}
-        <!-- Loop all logs in station_id -->
-        {% for log in station.list %}
-        <!-- Select only the last value -->
-        {% if forloop.last %}
-
-
-        <div class="row">
-
-          <div class="col-lg-3 col-6">
-            <div class="info-box">
-              <span class="info-box-icon bg-success"><i class="fas fa-thermometer-half"></i></span>
-              <div class="info-box-content">
-                <h5 style="color: #00B743;"><strong>Temperature</strong></h5>
-                <span class="info-box-number" style="font-size:25px;">{{ log.station_temperature }} <p style="display:inline;font-size:22px;">°C</p></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-6">
-            <div class="info-box">
-              <span class="info-box-icon bg-info"><i class="fas fa-tint"></i></span>
-              <div class="info-box-content">
-                <h4 style="color: #00A3BA;"><strong>Humidity</strong></h4>
-                <span class="info-box-number" style="font-size:25px;">{{ log.station_humidity }} <p style="display:inline;font-size:22px;">%</p></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-6">
-            <div class="info-box">
-              <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
-              <div class="info-box-content">
-                <h4 style="color: #6B747D;"><strong>PM <sub>2.5</sub></strong></h4>
-                <span class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }} <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-6">
-            <div class="info-box">
-              <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
-              <div class="info-box-content">
-                <h4 style="color: #6B747D;"><strong>PM <sub>10</sub></strong></h4>
-                <span class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }} <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
-
-
-        <!-- Main Content -->
-      
-
-      </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <strong>Copyright &copy; 2020.</strong>
-    All rights reserved.
-  </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-</div>
-<!-- ./wrapper -->
-
-<!-- jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- jQuery UI 1.12.1 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script>
-<!-- Bootstrap 4 Bundle-->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-<!-- Sparkline -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
-<!-- JQVMap -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
-<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
-<!-- jQuery Knob Chart -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
-<!-- OverlayScrollbars -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/js/OverlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/adminlte.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/demo.min.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/pages/dashboard.min.js"></script>
-<!-- AdminLTE dashboard demo 2(This is only for demo purposes) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/pages/dashboard2.min.js"></script>
-<!-- AdminLTE dashboard demo 3(This is only for demo purposes) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/pages/dashboard3.min.js"></script>
-<!-- Google Maps scripts. -->
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
-
-<!-- Custom script -->
-<script type="text/javascript">
-  $(function(){
-           $('[data-toggle="tooltip"]').tooltip();
-  })
-
-  // var $head = $('#head_station1').show();
-  // $head.hide();
-  $("#station_switch").click(function(){
-    // toggle_hidden_by_id("head_station1")
-    // toggle_hidden_by_id("head_station2")
-    // toggle_hidden_by_id("body_station1")
-    // toggle_hidden_by_id("body_station2")
-
-    toggle_display_by_id("head_station1")
-    toggle_display_by_id("head_station2")
-    // toggle_display_by_id("body_station1")
-    // toggle_display_by_id("body_station2")
-  });
-
-  function toggle_display_by_id(id) {
-    var display = document.getElementById(id);
-    if (display.style.display == "flex") {
-      display.style.display = "none";
-    } else {
-      display.style.display = "flex";
-    }
-  }
-
-  function toggle_hidden_by_id(id) {
-    var div = document.getElementById(id);
-    if (div.hidden == true) {
-      div.hidden = false;
-    } else {
-      div.hidden = true;
-    }
-  }
-
-  // $('#head_station1').show();
-  // $('#station_switch').click(function() {
-  //   var id = $(this).attr('id');
-  //   head_defualt.hide();
-  //   $(id).show();
-  // });
-
-  // Function for Calculate the center point of multiple latitude/longitude coordinate pairs
-  function rad2degr(rad) { return rad * 180 / Math.PI; }
-  function degr2rad(degr) { return degr * Math.PI / 180; }
-
-  /**
-   * @param latLngInDeg array of arrays with latitude and longtitude
-   *   pairs in degrees. e.g. [[latitude1, longtitude1], [latitude2
-   *   [longtitude2] ...]
-   *
-   * @return array with the center latitude longtitude pairs in
-   *   degrees.
-   */
-
-   function getLatLngCenter(latLngInDegr) {
-      var LATIDX = 0;
-      var LNGIDX = 1;
-      var sumX = 0;
-      var sumY = 0;
-      var sumZ = 0;
-
-      for (var i=0; i<latLngInDegr.length; i++) {
-          var lat = degr2rad(latLngInDegr[i][LATIDX]);
-          var lng = degr2rad(latLngInDegr[i][LNGIDX]);
-          // sum of cartesian coordinates
-          sumX += Math.cos(lat) * Math.cos(lng);
-          sumY += Math.cos(lat) * Math.sin(lng);
-          sumZ += Math.sin(lat);
-      }
-
-      var avgX = sumX / latLngInDegr.length;
-      var avgY = sumY / latLngInDegr.length;
-      var avgZ = sumZ / latLngInDegr.length;
-
-      // convert average x, y, z coordinate to latitude and longtitude
-      var lng = Math.atan2(avgY, avgX);
-      var hyp = Math.sqrt(avgX * avgX + avgY * avgY);
-      var lat = Math.atan2(avgZ, hyp);
-
-      return ([rad2degr(lat), rad2degr(lng)]);
-  }
-
-  // Create Center Point Between Station Locations
-  var points = [
-
-    {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
-    {% for station in station_list %}
-    {% for log in station.list %}
-    {% if forloop.last %}
-        [{{ log.station_latitude }}, {{ log.station_longitude }}],
     {% endif %}
     {% endfor %}
+
+    </div>
+
+    <!-- ============================================================================================================ -->
+    <!-- ================================= Grafana graphs =========================================================== -->
+    <!-- ============================================================================================================ -->
+
+    <div class="station1">
+
+    <!-- Row of Grafana graphs -->
+    <div class="row">
+
+      <!-- Temperature -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <iframe id="graph_station1_temperature" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=2" frameborder="4"></iframe>
+        </div>
+      </div>
+
+      <!-- Humidity -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-success shadow h-100 py-2">
+          <iframe id="graph_station1_humidity" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=4" frameborder="4"></iframe>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <!-- PM 2.5 -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <iframe id="graph_station1_pm25" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=6" frameborder="4"></iframe>
+        </div>
+      </div>
+
+      <!-- PM 10 -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <iframe id="graph_station1_pm10" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=26" frameborder="4"></iframe>
+        </div>
+      </div>
+
+    </div>
+
+    </div>
+
+    <!-- ============================================================================================================ -->
+    <!-- ================================= End of Station 1 ========================================================= -->
+    <!-- ============================================================================================================ -->
+
+    <!-- ============================================================================================================ -->
+    <!-- ================================== Start of Station 2 ====================================================== -->
+    <!-- ================================= Data Information Label =================================================== -->
+    <!-- ============================================================================================================ -->
+
+    <div class="station2">
+
+    <!-- Regroup by station_id -->
+    {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+    <!-- Loop by station_id -->
+    {% for station in station_list %}
+    <!-- Select station_id -->
+    {% if station.grouper == 2 %}
+    <!-- Loop all logs in station_id -->
+    {% for log in station.list %}
+    <!-- Select only the last value -->
+    {% if forloop.last %}
+
+    <!-- Head Label -->
+    <div class="station" id="head_station1" style="display:flex; margin-bottom:10px;">
+      <div class="col-sm-12">
+        <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
+        <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+      </div>
+    </div><!-- /.row -->
+
+
+    <div class="row">
+
+      <!-- Temperature -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-success"><i class="fas fa-thermometer-half"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #00B743;"><strong>Temperature</strong></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_temperature|floatformat:1 }}
+              <p style="display:inline;font-size:22px;">°C</p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Humidity -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-info"><i class="fas fa-tint"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #00A3BA;"><strong>Humidity</strong></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_humidity|floatformat:1 }}
+              <p style="display:inline;font-size:22px;">%</p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PM 2.5 -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #6B747D;"><strong>PM <sub>2.5</sub></strong><i style="float:right;" class="fas fa-info-circle pm25-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }}
+              <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PM 10 -->
+      <div class="col-lg-3 col-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
+          <div class="info-box-content">
+            <h4 style="color: #6B747D;"><strong>PM <sub>10</sub></strong><i style="float:right;" class="fas fa-info-circle pm10-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
+            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }}
+              <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+    {% endfor %}
+    {% endif %}
     {% endfor %}
 
-  ];
-  var center_point = getLatLngCenter(points);
+    </div>
 
-  // Calculate The Zoom Level
-  var GLOBE_WIDTH = 256; // a constant in Google's map projection
-  if (points[0][1] < points[1][1]) {
-    var west = points[0][1];
-    var east = points[1][1];
-  } else {
-    var west = points[1][1];
-    var east = points[0][1];
-  }
-  var angle = east - west;
-  if (angle < 0) {
-    angle += 360;
-  }
-  var container = document.getElementById('map');
-  var width_pixel = container.offsetWidth;
-  var zoom_level = Math.round(Math.log(width_pixel * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+    <!-- ============================================================================================================ -->
+    <!-- ================================= Grafana graphs =========================================================== -->
+    <!-- ============================================================================================================ -->
 
-  var dark_mode_json = [
-    {
-      "elementType": "geometry",
-      "stylers": [{"color": "#212121"}]
-    },
-    {
-      "elementType": "labels.icon",
-      "stylers": [{"visibility": "on"}]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [{"color": "#212121"}]
-    },
-    {
-      "featureType": "administrative",
-      "elementType": "geometry",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "featureType": "administrative.country",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#9e9e9e"}]
-    },
-    {
-      "featureType": "administrative.land_parcel",
-      "stylers": [{"visibility": "off"}]
-    },
-    {
-      "featureType": "administrative.locality",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#bdbdbd"}]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [{"color": "#181818"}]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#616161"}]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.stroke",
-      "stylers": [{"color": "#1b1b1b"}]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.fill",
-      "stylers": [{"color": "#2c2c2c"}]
-    },
-    {
-      "featureType": "road",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#8a8a8a"}]
-    },
-    {
-      "featureType": "road.arterial",
-      "elementType": "geometry",
-      "stylers": [{"color": "#373737"}]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [{"color": "#3c3c3c"}]
-    },
-    {
-      "featureType": "road.highway.controlled_access",
-      "elementType": "geometry",
-      "stylers": [{"color": "#4e4e4e"}]
-    },
-    {
-      "featureType": "road.local",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#616161"}]
-    },
-    {
-      "featureType": "transit",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [{"color": "#000000"}]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#3d3d3d"}]
-    }
-  ];
+    <div class="station2">
 
+    <!-- Row of Grafana graphs -->
+    <div class="row">
 
-  var map;
+      <!-- Temperature -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <iframe id="graph_station2_temperature" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=35" frameborder="4"></iframe>
+        </div>
+      </div>
 
-  function createMap () {
+      <!-- Humidity -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-success shadow h-100 py-2">
+          <iframe id="graph_station2_humidity" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=36" frameborder="4"></iframe>
+        </div>
+      </div>
 
-    var options = {
-      center: { lat: center_point[0], lng: center_point[1] },
-      zoom: zoom_level,
-      //  draggable: false
-      styles: [],
-      mapTypeControl: false,
-      fullscreenControl: true,
-      streetViewControl: false,
-      zoomControl: false,
-    };
+    </div>
 
-    // New Map
-    map = new google.maps.Map(document.getElementById('map'), options);
+    <div class="row">
 
-    // Change Theme [Dark Mode]
-    if (false) {
-        map.setOptions({styles : dark_mode_json});
-    }
+      <!-- PM 2.5 -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <iframe id="graph_station2_pm25" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=37" frameborder="4"></iframe>
+        </div>
+      </div>
 
-    // Add Marker
-    var markers = [
+      <!-- PM 10 -->
+      <div class="col-xs col-md-6" style="margin-top:10px;">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <iframe id="graph_station2_pm10" src="http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&panelId=38" frameborder="4"></iframe>
+        </div>
+      </div>
 
-      {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
-      {% for station in station_list %}
-      {% for log in station.list %}
-      {% if forloop.last %}
-      {
-          coords: { lat: {{ log.station_latitude }}, lng: {{ log.station_longitude }} },
-          content: '<h4>Station: {{ log.station_id }}</h4>'
-      },
-      {% endif %}
-      {% endfor %}
-      {% endfor %}
+    </div>
 
-    ];
+    </div>
 
+    <!-- ============================================================================================================ -->
+    <!-- ================================= End of Station 1 ========================================================= -->
+    <!-- ============================================================================================================ -->
 
-    // Loop through markers
-    for(var i = 0; i < markers.length; i++){
-      addMarker(markers[i]);
-    }
-
-    // Add Marker Function
-    function addMarker(props){
-      var marker = new google.maps.Marker({
-          position: props.coords,
-          map: map,
-      });
-
-      // Check content
-      if(props.content){
-          var infoWindow = new google.maps.InfoWindow({
-              content: props.content
-          })
-
-          marker.addListener('click', function(){
-              infoWindow.open(map, marker);
-        });
-      }
-    }
-  }
-
-</script>
-</body>
-</html>
+  </div><!-- /.container-fluid -->
+</section>
+{% endblock content %}

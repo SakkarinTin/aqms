@@ -1,166 +1,235 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Air Quality Monitoring System | History Logs</title>
 
-  <!-- Custom fonts for this template-->
-  <link href="{% static 'weatherstation/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/css/adminlte.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/css/OverlayScrollbars.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-date-range-picker/0.21.1/daterangepicker.min.css">
+  <!-- summernote -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css">
 
-  <!-- Custom styles for this template-->
-  <link href="{% static 'weatherstation/css/sb-admin-2.min.css' %}" rel="stylesheet">
+  <!--  Additional Custom Style-->
 
-  <title>Hexi Weather - Charts</title>
 
 </head>
 
-<body id="page-top">
+<body class="hold-transition sidebar-mini layout-fixed">
+  <div class="wrapper">
 
-  <!-- Page Wrapper -->
-  <div id="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
 
-    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
-      <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
-        <div class="sidebar-brand-icon">
-        	<i class="fas fa-h-square"></i>
+
+      <!-- Right navbar links -->
+
+      <ul class="navbar-nav ml-auto">
+
+
+        <li class="nav-item">
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+            <i class="fas fa-expand-arrows-alt"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+            <i class="fas fa-th-large"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="font-family: Arial, Helvetica, sans-serif">
+
+      <!-- Brand Logo -->
+      <a href="{% url 'index' %}" class="brand-link logo-switch">
+        <div class="brand-image-xl logo-xs" style="left: 3px;top: 20px; font-weight:700;font-size:23px;">AQMS</div>
+        <div class="brand-image-xs logo-xl" style="left: 3px;top: 20px; font-weight:500;font-size:25px;"><strong>AirQuality</strong>
+          <p style="display:inline;font-size:15px;">Monitoring System</p>
         </div>
-        <div class="sidebar-brand-text mx-3">HexiWeather</div>
+        <!-- <img src="{% static 'img/logo-xs.png' %}/" alt="AQMS Logo Small" class="brand-image-xl logo-xs">       -->
+        <!-- <img src="{% static 'img/logo-xl.png' %}" alt="AQMS Logo Large" class="brand-image-xs logo-xl" style="left: 0px"> -->
       </a>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'index' %}">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
-      </li>
-
-      <!-- Nav Item - Charts -->
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'charts' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
-
-      <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
-
-    </ul>
-    <!-- End of Sidebar -->
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-      <!-- Main Content -->
-      <div id="content">
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
-
-          <!-- Page Heading -->
-          <p></p>
-          <h1 class="h3 mb-2 text-gray-800">Charts</h1><p></p>
-
-          <!-- Content Row -->
-          <div class="row">
-
-            <div class="col-xl-6 col-lg-7">
-
-              <!-- Temperature Chart -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Temperature</h6>
-                </div>
-                <div class="card-body">
-                  <div class="chart-area">
-                      <canvas id="myAreaChart"></canvas>
-                  </div>
-                  <hr>
-                  Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
-                </div>
-              </div>
-
-            </div>
-
-            <div class="col-xl-6 col-lg-7">
-
-            <!--  Humidity Chart-->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Humidity</h6>
-                </div>
-                <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
-                  </div>
-                  <hr>
-                  Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
-                </div>
-              </div>
-            </div>
-
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{% static 'img/user1.png' %}" class="img-circle elevation-2" alt="User Image">
           </div>
-
-        </div>
-        <!-- /.container-fluid -->
-
-      </div>
-      <!-- End of Main Content -->
-
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; HexiWeather Website 2019</span>
+          <div class="info">
+            <a href="{% url 'index' %}" class="d-block">Sakkarin Pumprajum</a>
           </div>
         </div>
-      </footer>
-      <!-- End of Footer -->
 
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+            <li class="nav-item">
+              <a href="{% url 'index' %}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Dashboard
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{% url 'charts' %}" class="nav-link active">
+                <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+                <i class="nav-icon fas fa-history"></i>
+                <p>
+                  History Logs
+                </p>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Main content -->
+    <section class="content">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">History Logs</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <div id="jsGrid1"></div>
+        </div>
+
+        <script type="text/javascript">
+        $(document).ready(function(){
+                $('#table').bootstrapTable({
+                   data:{{data|safe}}
+                });
+            });
+        </script>
+
+        <table id="table">
+            <thead>
+                <tr>
+                    <th data-field="station_humidity">Humidity</th>
+                    <th data-field="station_temperature">Temperature</th>
+                </tr>
+            </thead>
+        </table>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </section>
+    <!-- /.content -->
     </div>
-    <!-- End of Content Wrapper -->
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+      <strong>Copyright &copy; 2020.</strong>
+      All rights reserved.
+    </footer>
 
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
   </div>
-  <!-- End of Page Wrapper -->
+  <!-- ./wrapper -->
 
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- jQuery UI 1.12.1 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script>
+    $.widget.bridge('uibutton', $.ui.button)
+  </script>
+  <!-- Bootstrap 4 Bundle-->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <!-- ChartJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <!-- Sparkline -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
+  <!-- JQVMap -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
+  <script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+  <!-- jQuery Knob Chart -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
+  <!-- daterangepicker -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.js"></script>
+  <!-- Tempusdominus Bootstrap 4 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+  <!-- Summernote -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+  <!-- OverlayScrollbars -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/js/OverlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/demo.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="{% static 'dist/js/demo.js' %}"></script>
+  <!-- Google Maps scripts. -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="{% static 'weatherstation/vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'weatherstation/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+  $(function () {
+    $("#jsGrid1").jsGrid({
+        height: "100%",
+        width: "100%",
 
-  <!-- Core plugin JavaScript-->
-  <script src="{% static 'weatherstation/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+        sorting: true,
+        paging: true,
 
-  <!-- Custom scripts for all pages-->
-  <script src="{% static 'weatherstation/js/sb-admin-2.min.js' %}"></script>
+        data: db.clients,
 
-  <!-- Page level plugins -->
-  <script src="{% static 'weatherstation/vendor/chart.js/Chart.min.js' %}"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="{% static 'weatherstation/js/demo/chart-area-demo.js' %}"></script>
-  <script src="{% static 'weatherstation/js/demo/chart-pie-demo.js' %}"></script>
-  <script src="{% static 'weatherstation/js/demo/chart-bar-demo.js' %}"></script>
+        fields: [
+            { name: "Name", type: "text", width: 150 },
+            { name: "Age", type: "number", width: 50 },
+            { name: "Address", type: "text", width: 200 },
+            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
+            { name: "Married", type: "checkbox", title: "Is Married" }
+        ]
+    });
+  });
+</script>
 
 </body>
 

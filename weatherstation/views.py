@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.contrib.gis.geos import Point
 from django.views.generic import ListView, CreateView
 import random, requests as req, json
+from django.http import JsonResponse
+from .utils import serialize_bootstraptable
 
 # Not Use This Anymore
 def index(request):
@@ -16,12 +18,20 @@ def index(request):
 
 
 def charts(request):
+    # context = {
+    #     'stationlogs': StationLogs.objects.all()
+    # }
+    #
+    # return render(request, 'weatherstation/charts.html', context)
+    #
+    data = StationLogs.objects.all().values()
 
-    context = {
-        'stationlogs': StationLogs.objects.all()
-    }
+    return render(request, 'weatherstation/charts.html', {'data': data})
 
-    return render(request, 'weatherstation/charts.html', context)
+def view_logs(request):
+    json_send = serialize_bootstraptable(StationLogs.objects.all())
+
+    return JsonResponse(json_send, safe=False)
 
 
 # Index View
