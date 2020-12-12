@@ -136,23 +136,42 @@
           <div id="jsGrid1"></div>
         </div>
 
-        <script type="text/javascript">
-        $(document).ready(function(){
-                $('#table').bootstrapTable({
-                   data:{{data|safe}}
-                });
-            });
-        </script>
 
-        <table id="table">
+        <!-- <table id="table">
             <thead>
                 <tr>
                     <th data-field="station_humidity">Humidity</th>
                     <th data-field="station_temperature">Temperature</th>
                 </tr>
             </thead>
-        </table>
-        <!-- /.card-body -->
+        </table> -->
+
+        <!-- Regroup by station_id -->
+        {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+        <!-- Loop by station_id -->
+        {% for station in station_list %}
+        <!-- Select station_id -->
+        {% if station.grouper == 1 %}
+        <!-- Loop all logs in station_id -->
+        {% for log in station.list %}
+        <!-- Select only the last value -->
+        {% if forloop.last %}
+        <!-- Head Label -->
+        <div class="station" id="head_station1" style="display:flex; margin-bottom:10px;">
+          <div class="col-sm-12">
+            <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
+            <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+          </div>
+        </div><!-- /.row -->
+
+
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+
+
+
       </div>
       <!-- /.card -->
     </section>
@@ -207,29 +226,8 @@
   <!-- AdminLTE for demo purposes -->
   <script src="{% static 'dist/js/demo.js' %}"></script>
   <!-- Google Maps scripts. -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script> -->
 
-  <script>
-  $(function () {
-    $("#jsGrid1").jsGrid({
-        height: "100%",
-        width: "100%",
-
-        sorting: true,
-        paging: true,
-
-        data: db.clients,
-
-        fields: [
-            { name: "Name", type: "text", width: 150 },
-            { name: "Age", type: "number", width: 50 },
-            { name: "Address", type: "text", width: 200 },
-            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
-            { name: "Married", type: "checkbox", title: "Is Married" }
-        ]
-    });
-  });
-</script>
 
 </body>
 

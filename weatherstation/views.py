@@ -9,7 +9,6 @@ from .utils import serialize_bootstraptable
 
 # Not Use This Anymore
 def index(request):
-
     context = {
         'stationlogs': StationLogs.objects.all()
     }
@@ -18,15 +17,15 @@ def index(request):
 
 
 def charts(request):
-    # context = {
-    #     'stationlogs': StationLogs.objects.all()
-    # }
-    #
-    # return render(request, 'weatherstation/charts.html', context)
-    #
-    data = StationLogs.objects.all().values()
+    context = {
+        'stationlogs': StationLogs.objects.all()
+    }
 
-    return render(request, 'weatherstation/charts.html', {'data': data})
+    return render(request, 'weatherstation/charts.html', context)
+
+    # data = StationLogs.objects.all().values()
+    #
+    # return render(request, 'weatherstation/charts.html', {'data': data})
 
 def view_logs(request):
     json_send = serialize_bootstraptable(StationLogs.objects.all())

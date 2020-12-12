@@ -210,6 +210,16 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{% url 'charts' %}" class="nav-link">
+              <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Analysis Page
+              </p>
+            </a>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -607,7 +617,7 @@
   }
 
   function grafanaTimeChangeHelperSrc(time) {
-    var first_part_src = "http://www.aqmswebsite.tk:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&from=now-";
+    var first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&from=now-";
     document.getElementById("graph_station1_temperature").src = first_part_src + time + "&to=now&panelId=2";
     document.getElementById("graph_station1_humidity").src = first_part_src + time + "&to=now&panelId=4";
     document.getElementById("graph_station1_pm25").src = first_part_src + time + "&to=now&panelId=6";
