@@ -607,7 +607,7 @@
   }
 
   function grafanaTimeChangeHelperSrc(time) {
-    var first_part_src = "http://188.166.180.188:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&from=now-";
+    var first_part_src = "http://www.aqmswebsite.tk:3000/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&from=now-";
     document.getElementById("graph_station1_temperature").src = first_part_src + time + "&to=now&panelId=2";
     document.getElementById("graph_station1_humidity").src = first_part_src + time + "&to=now&panelId=4";
     document.getElementById("graph_station1_pm25").src = first_part_src + time + "&to=now&panelId=6";
