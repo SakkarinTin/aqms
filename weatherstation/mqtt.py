@@ -1,6 +1,5 @@
 import paho.mqtt.client as mqtt
-import requests as req
-from requests.auth import HTTPBasicAuth
+
 import json
 
 # MQTT Settings

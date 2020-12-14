@@ -16,12 +16,12 @@ def index(request):
     return render(request, 'weatherstation/index.html', context)
 
 
-def charts(request):
+def logs(request):
     context = {
         'stationlogs': StationLogs.objects.all()
     }
 
-    return render(request, 'weatherstation/charts.html', context)
+    return render(request, 'weatherstation/logs.html', context)
 
     # data = StationLogs.objects.all().values()
     #

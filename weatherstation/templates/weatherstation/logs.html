@@ -1,0 +1,97 @@
+{% extends "weatherstation/base.html" %}
+{% load humanize %}
+
+<!-- BLOCK ORDER according to base.html -->
+<!-- Style // Nav Bar // Side Bar // Main Content // Javascript-->
+
+<!-- ########################################### STYLE ################################################################### -->
+{% block style %}
+<style>
+</style>
+{% endblock style %}
+<!-- ########################################### NAV BAR ################################################################### -->
+{% block navbar %}
+<!-- Right navbar -->
+<ul class="navbar-nav ml-auto">
+{% endblock navbar %}
+<!-- ########################################### SIDE BAR ################################################################### -->
+{% block sidebar %}
+<li class="nav-item">
+  <a href="{% url 'index' %}" class="nav-link">
+    <i class="nav-icon fas fa-tachometer-alt"></i>
+    <p>
+      Dashboard
+    </p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'logs' %}" class="nav-link active">
+    <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+    <i class="nav-icon fas fa-history"></i>
+    <p>
+      History Logs
+    </p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'logs' %}" class="nav-link">
+    <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+    <i class="nav-icon fas fa-chart-bar"></i>
+    <p>
+      Analysis Page
+    </p>
+  </a>
+</li>
+{% endblock sidebar %}
+<!-- ########################################### MAIN CONTENT ################################################################### -->
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+    <br>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="col-md-12">
+          <h4>History Logs Table</h4>
+          <div class="table-responsive">
+            <table id="bootstrapdatatable" class="table table-striped table-bordered" width="100%">
+              <thead>
+                <th>ID</th>
+                <th>Sation</th>
+                <th>Temperature</th>
+                <th>Humidity</th>
+                <th>PM<sub>2.5</sub></th>
+                <th>PM<sub>10</sub></th>
+                <th>Time</th>
+              </thead>
+              <tbody>
+                {% for test in stationlogs %}
+                <tr>
+                  <td>{{ test.log_id }}</td>
+                  <td>{{ test.station_id }}</td>
+                  <td>{{ test.station_temperature }}</td>
+                  <td>{{ test.station_humidity }}</td>
+                  <td>{{ test.station_pm25 }}</td>
+                  <td>{{ test.station_pm10 }}</td>
+                  <td>{{ test.station_recorded_time }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+      </div><!-- End of card-body -->
+    </div><!-- End of card -->
+  </div><!-- End of container-fluid -->
+</section>
+{% endblock content %}
+<!-- ########################################### JAVASCRIPT ################################################################### -->
+{% block script %}
+<script type="text/javascript">
+
+</script>
+{% endblock script %}

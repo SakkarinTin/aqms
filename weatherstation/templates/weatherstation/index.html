@@ -1,33 +1,162 @@
 {% extends "weatherstation/base.html" %}
 {% load humanize %}
+
+<!-- BLOCK ORDER according to base.html -->
+<!-- Style // Nav Bar // Side Bar // Main Content // Javascript-->
+
+<!-- ########################################### STYLE ################################################################### -->
+{% block style %}
+<style>
+  #map {
+    height: 250px;
+    border: 1px solid grey;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Tooltip */
+  .tooltip > .tooltip-inner {
+    background-color: #E5E5E5;
+    color: #000000;
+    border: 1px grey;
+    padding: 10px;
+    font-size: 13px;
+    text-align: justify;
+  }
+  /* Tooltip on right */
+  .bs-tooltip-top .arrow::before, .bs-tooltip-auto[x-placement^="top"] .arrow::before {
+    border-top-color: #E5E5E5 !important;
+  }
+
+  .bs-tooltip-right .arrow::before, .bs-tooltip-auto[x-placement^="right"] .arrow::before {
+    border-right-color: #E5E5E5 !important;
+  }
+
+
+  .bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+    border-bottom-color: #E5E5E5 !important;
+  }
+
+
+  .bs-tooltip-left .arrow::before, .bs-tooltip-auto[x-placement^="left"] .arrow::before {
+    border-left-color: #E5E5E5 !important;
+  }
+
+  /* Class Color */
+  .blue{
+     background-color: #17BCD6;
+  }
+  .green{
+     background-color: green;
+  }
+  .yellow{
+    background-color: yellow;
+  }
+  .orange{
+     background-color: orange;
+  }
+  .red{
+     background-color: #FF4C25;
+  }
+
+</style>
+{% endblock style %}
+<!-- ########################################### NAV BAR ################################################################### -->
+{% block navbar %}
+<!-- Search Form -->
+<form class="form-inline ml-3" id="searchForm">
+  <div class="input-group input-group-sm" data-toggle="tooltip" title="Search Stations by ID<br><strong>eg. 1, 2, ...</strong>">
+    <input id="inputForm" class="form-control form-control-navbar" type="number" placeholder="Search Stations" aria-label="Search">
+    <div class="input-group-append">
+      <button class="btn btn-navbar" type="submit">
+        <i class="fas fa-search"></i>
+      </button>
+      <!-- <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right"  title="<em>Tooltip</em> <u>with</u> <b>HTML</b>"></i> -->
+    </div>
+  </div>
+</form>
+<!-- <button id="station_switch">S</button> -->
+
+<!-- Right navbar -->
+<ul class="navbar-nav ml-auto">
+
+  <!-- Grafana Graph Time Range -->
+  <div class="nav-item dropdown" style="font-size: 90%;margin-left:5px;">
+    <a class="nav-link bg-secondary rounded dropdown-toggle" href="#" id="graph_time_dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="far fa-clock"></i> Last 30 minutes
+    </a>
+    <div class="dropdown-menu py-0">
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('5m')" id="time1">Last 5 minutes</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('15m')" id="time2">Last 15 minutes</a>
+      <a class="dropdown-item bg-primary disabled" href="javascript:grafanaTimeChange('30m')" id="time3">Last 30 minutes</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('1h')" id="time4">Last 1 hour</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('3h')" id="time5">Last 3 hour</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('6h')" id="time6">Last 6 hour</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('12h')" id="time7">Last 12 hour</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('24h')" id="time8">Last 24 hour</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('2d')" id="time9">Last 2 days</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('7d')" id="time10">Last 7 days</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('30d')" id="time11">Last 30 days</a>
+    </div>
+  </div>
+
+{% endblock navbar %}
+<!-- ########################################### SIDE BAR ################################################################### -->
+{% block sidebar %}
+<li class="nav-item">
+  <a href="{% url 'index' %}" class="nav-link active">
+    <i class="nav-icon fas fa-tachometer-alt"></i>
+    <p>
+      Dashboard
+    </p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'logs' %}" class="nav-link">
+    <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+    <i class="nav-icon fas fa-history"></i>
+    <p>
+      History Logs
+    </p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'logs' %}" class="nav-link">
+    <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
+    <i class="nav-icon fas fa-chart-bar"></i>
+    <p>
+      Analysis Page
+    </p>
+  </a>
+</li>
+{% endblock sidebar %}
+<!-- ########################################### MAIN CONTENT ################################################################### -->
 {% block content %}
+<!-- <section class="content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <h1 style="float: left;">Header</h1>
+        <ol style="float: right;" class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section> -->
 
-<!-- ==================================================================================================================== -->
-<!-- ======================================== Head Above Google Maps ==================================================== -->
-<!-- ==================================================================================================================== -->
-
-<!-- Content Header (Page header) -->
-{% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
-{% for station in station_list %}
-{% for log in station.list %}
-{% if forloop.last %}
-
-
-
-
-
-{% endif %}
-{% endfor %}
-{% endfor %}
-
-<!-- /.content-header -->
-
-
-<!-- ================================================================================================================== -->
-<!-- =========================================== Main Content ========================================================= -->
-<!-- ================================================================================================================== -->
-
-<section class="content" style="font-family: Arial, Helvetica, sans-serif">
+<section class="content">
   <div class="container-fluid">
 
 
@@ -36,15 +165,14 @@
     <!-- ============================================================================================================ -->
 
     <!--  Google Maps -->
-    <div class="row" style="margin-top:10px;">
+    <!-- <br style="content: '';margin: 4em;display: block;font-size: 24%;"> -->
+    <br>
+    <div class="row">
       <div class="col-xl-12 col-lg-7">
         <div id="map"></div>
       </div>
     </div>
-
-
-    <!-- Small boxes (Stat box) -->
-    <p></p>
+    <br style="content: '';margin: 4em;display: block;font-size: 24%;">
 
     <!-- ============================================================================================================ -->
     <!-- ================================== Start of Station 1 ====================================================== -->
@@ -317,11 +445,507 @@
     </div>
 
     </div>
-
-    <!-- ============================================================================================================ -->
-    <!-- ================================= End of Station 1 ========================================================= -->
-    <!-- ============================================================================================================ -->
-
   </div><!-- /.container-fluid -->
 </section>
 {% endblock content %}
+<!-- ########################################### JAVASCRIPT ################################################################### -->
+{% block script %}
+<!-- Google Maps scripts. -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+
+<script type="text/javascript">
+
+  // Function for Calculate the center point of multiple latitude/longitude coordinate pairs
+  function rad2degr(rad) { return rad * 180 / Math.PI; }
+  function degr2rad(degr) { return degr * Math.PI / 180; }
+
+  /**
+   * @param latLngInDeg array of arrays with latitude and longtitude
+   *   pairs in degrees. e.g. [[latitude1, longtitude1], [latitude2
+   *   [longtitude2] ...]
+   *
+   * @return array with the center latitude longtitude pairs in
+   *   degrees.
+   */
+
+   function getLatLngCenter(latLngInDegr) {
+      var LATIDX = 0;
+      var LNGIDX = 1;
+      var sumX = 0;
+      var sumY = 0;
+      var sumZ = 0;
+
+      for (var i=0; i<latLngInDegr.length; i++) {
+          var lat = degr2rad(latLngInDegr[i][LATIDX]);
+          var lng = degr2rad(latLngInDegr[i][LNGIDX]);
+          // sum of cartesian coordinates
+          sumX += Math.cos(lat) * Math.cos(lng);
+          sumY += Math.cos(lat) * Math.sin(lng);
+          sumZ += Math.sin(lat);
+      }
+
+      var avgX = sumX / latLngInDegr.length;
+      var avgY = sumY / latLngInDegr.length;
+      var avgZ = sumZ / latLngInDegr.length;
+
+      // convert average x, y, z coordinate to latitude and longtitude
+      var lng = Math.atan2(avgY, avgX);
+      var hyp = Math.sqrt(avgX * avgX + avgY * avgY);
+      var lat = Math.atan2(avgZ, hyp);
+
+      return ([rad2degr(lat), rad2degr(lng)]);
+  }
+
+  // Create Center Point Between Station Locations
+  var points = [
+
+    {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+    {% for station in station_list %}
+    {% for log in station.list %}
+    {% if forloop.last %}
+        [{{ log.station_latitude }}, {{ log.station_longitude }}],
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+
+  ];
+  var center_point = getLatLngCenter(points);
+
+  // Calculate The Zoom Level
+  var GLOBE_WIDTH = 256; // a constant in Google's map projection
+  if (points[0][1] < points[1][1]) {
+    var west = points[0][1];
+    var east = points[1][1];
+  } else {
+    var west = points[1][1];
+    var east = points[0][1];
+  }
+  var angle = east - west;
+  if (angle < 0) {
+    angle += 360;
+  }
+  var container = document.getElementById('map');
+  var width_pixel = container.offsetWidth - 300;
+  var zoom_level = Math.round(Math.log(width_pixel * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+
+  var dark_mode_json = [
+    {
+      "elementType": "geometry",
+      "stylers": [{"color": "#212121"}]
+    },
+    {
+      "elementType": "labels.icon",
+      "stylers": [{"visibility": "on"}]
+    },
+    {
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#757575"}]
+    },
+    {
+      "elementType": "labels.text.stroke",
+      "stylers": [{"color": "#212121"}]
+    },
+    {
+      "featureType": "administrative",
+      "elementType": "geometry",
+      "stylers": [{"color": "#757575"}]
+    },
+    {
+      "featureType": "administrative.country",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#9e9e9e"}]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "stylers": [{"visibility": "off"}]
+    },
+    {
+      "featureType": "administrative.locality",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#bdbdbd"}]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#757575"}]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "geometry",
+      "stylers": [{"color": "#181818"}]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#616161"}]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.stroke",
+      "stylers": [{"color": "#1b1b1b"}]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry.fill",
+      "stylers": [{"color": "#2c2c2c"}]
+    },
+    {
+      "featureType": "road",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#8a8a8a"}]
+    },
+    {
+      "featureType": "road.arterial",
+      "elementType": "geometry",
+      "stylers": [{"color": "#373737"}]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [{"color": "#3c3c3c"}]
+    },
+    {
+      "featureType": "road.highway.controlled_access",
+      "elementType": "geometry",
+      "stylers": [{"color": "#4e4e4e"}]
+    },
+    {
+      "featureType": "road.local",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#616161"}]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#757575"}]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [{"color": "#000000"}]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [{"color": "#3d3d3d"}]
+    }
+  ];
+
+
+  var map;
+
+  function createMap () {
+
+    var options = {
+      center: { lat: center_point[0], lng: center_point[1] },
+      zoom: zoom_level,
+      styles: [],
+      mapTypeControl: false,
+      fullscreenControl: true,
+      streetViewControl: false,
+      zoomControl: false,
+    };
+
+    // New Map
+    map = new google.maps.Map(document.getElementById('map'), options);
+
+    // Change Theme [Dark Mode]
+    if (false) {
+        map.setOptions({styles : dark_mode_json});
+    }
+
+    // Add Marker
+    var markers = [
+
+      {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
+      {% for station in station_list %}
+      {% for log in station.list %}
+      {% if forloop.last %}
+      {
+          coords: { lat: {{ log.station_latitude }}, lng: {{ log.station_longitude }} },
+          content: '<h4 style="color: gray;">Station: {{ log.station_id }}</h4>'
+      },
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+
+    ];
+
+    map.markers = []
+
+    // Loop through markers
+    for(var i = 0; i < markers.length; i++){
+      addMarker(markers[i], i);
+    }
+
+    // Add Marker Function
+    function addMarker(props, i){
+      var marker = new google.maps.Marker({
+          position: props.coords,
+          map: map,
+          // icon:'pinkball.png',
+      });
+
+      map.markers.push(marker);
+
+      if(props.content){
+          map.markers[i].InfoWindow = new google.maps.InfoWindow({
+              content: props.content
+          })
+
+          marker.addListener('click', function(){
+            map.markers[i].InfoWindow.open(map, marker);
+            map.setZoom(14);
+            map.setCenter(marker.getPosition());
+
+            // Show Data Dashboard on Click!
+            // Station 1 condition Marker
+            if (i == 0) {
+              if ($(".station1").is(":hidden")) {
+                $('.station2').hide();
+                $('.station1').slideDown(1200);
+              }
+            }
+            // Station 2 condition Marker
+            else  {
+              if ($(".station2").is(":hidden")) {
+                $('.station1').hide();
+                $('.station2').slideDown(1200);
+              }
+            }
+
+
+
+            // for (var j = 0; j < marker.length; j++) {
+            //   if (j != i) {
+            //     map.markers[j].infowindow.close();
+            //   }
+            // }
+        });
+      }
+    }
+  }
+
+
+  // <!-- ============================================================================================================ -->
+  // <!-- ========================== Change Map Dark Mode ============================================================ -->
+  // <!-- ============================================================================================================ -->
+  var isDarkModeEnable = false;
+  var time_select = '30m';
+  var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=light&from=now-";
+  function darkModeSwitch(checkboxElem) {
+    if (checkboxElem.checked) {
+      // Enabled Dark Mode
+      // Change Theme
+      document.getElementById("bodyID").classList.add('dark-mode');
+      document.getElementById("navbarID").classList.remove('navbar-light');
+      document.getElementById("navbarID").classList.remove('navbar-white');
+      document.getElementById("navbarID").classList.add('navbar-dark');
+      document.getElementById("navbarID").classList.add('navbar-gray-dark');
+      // Change Google Maps
+      map.setOptions({styles: dark_mode_json});
+      // Change Grafana
+      isDarkModeEnable = true;
+      var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=dark&from=now-";
+      document.getElementById("graph_station1_temperature").src = grafana_first_part_src + time_select + "&to=now&panelId=2";
+      document.getElementById("graph_station1_humidity").src = grafana_first_part_src + time_select + "&to=now&panelId=4";
+      document.getElementById("graph_station1_pm25").src = grafana_first_part_src + time_select + "&to=now&panelId=6";
+      document.getElementById("graph_station1_pm10").src = grafana_first_part_src + time_select + "&to=now&panelId=26";
+      document.getElementById("graph_station2_temperature").src = grafana_first_part_src + time_select + "&to=now&panelId=35";
+      document.getElementById("graph_station2_humidity").src = grafana_first_part_src + time_select + "&to=now&panelId=36";
+      document.getElementById("graph_station2_pm25").src = grafana_first_part_src + time_select + "&to=now&panelId=37";
+      document.getElementById("graph_station2_pm10").src = grafana_first_part_src + time_select + "&to=now&panelId=38";
+    } else {
+      // Disabled Dark Mode
+      // Change Theme
+      document.getElementById("bodyID").classList.remove('dark-mode');
+      document.getElementById("navbarID").classList.remove('navbar-dark');
+      document.getElementById("navbarID").classList.remove('navbar-gray-dark');
+      document.getElementById("navbarID").classList.add('navbar-light');
+      document.getElementById("navbarID").classList.add('navbar-white');
+      // Change Google Maps
+      map.setOptions({styles: []});
+      // Change Grafana
+      isDarkModeEnable = false;
+      var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=light&from=now-";
+      document.getElementById("graph_station1_temperature").src = grafana_first_part_src + time_select + "&to=now&panelId=2";
+      document.getElementById("graph_station1_humidity").src = grafana_first_part_src + time_select + "&to=now&panelId=4";
+      document.getElementById("graph_station1_pm25").src = grafana_first_part_src + time_select + "&to=now&panelId=6";
+      document.getElementById("graph_station1_pm10").src = grafana_first_part_src + time_select + "&to=now&panelId=26";
+      document.getElementById("graph_station2_temperature").src = grafana_first_part_src + time_select + "&to=now&panelId=35";
+      document.getElementById("graph_station2_humidity").src = grafana_first_part_src + time_select + "&to=now&panelId=36";
+      document.getElementById("graph_station2_pm25").src = grafana_first_part_src + time_select + "&to=now&panelId=37";
+      document.getElementById("graph_station2_pm10").src = grafana_first_part_src + time_select + "&to=now&panelId=38";
+    }
+  }
+
+
+  // <!-- ============================================================================================================ -->
+  // <!-- ========================== Hide and Show Section =========================================================== -->
+  // <!-- ============================================================================================================ -->
+  $(document).ready(function() {
+
+    $('.station2').hide();
+    $("#station_switch").click(function(){
+      if ($(".station2").is(":hidden")) {
+        $('.station1').hide();
+        $('.station2').slideDown(1200);
+      } else {
+        $('.station2').hide();
+        $('.station1').slideDown(1200);
+      }
+    });
+
+    $('#searchForm').submit(function (e) {
+        e.preventDefault();
+
+        // Get Input Element
+        var input = document.getElementById("inputForm");
+
+        // Select Station with click trigger on Marker
+        if (input.value === "1") {
+          google.maps.event.trigger(map.markers[0], 'click');
+        } else if (input.value === "2") {
+          google.maps.event.trigger(map.markers[1], 'click');
+        } else {
+          alert("There is no Station " + input.value + " in the system.");
+        }
+
+        // Reset field input
+        input.value = "";
+
+        // Remove Focus Input form
+        $("#inputForm").blur();
+    });
+
+
+  });
+
+  // Not Use
+  function toggle_display_by_id(id) {
+    var display = document.getElementById(id);
+    if (display.style.display == "flex") {
+      display.style.display = "none";
+    } else {
+      display.style.display = "flex";
+    }
+  }
+
+
+  // <!-- ============================================================================================================ -->
+  // <!-- ========================== Grafana Time Range Change =========================================================== -->
+  // <!-- ============================================================================================================ -->
+  function grafanaTimeChange(time) {
+    grafanaTimeChangeHelperSrc(time);
+    var newText;
+    switch (time) {
+      case '5m':
+        grafanaTimeChangeHelperButton("time1");
+        newText = "Last 5 minutes"
+        break;
+      case '15m':
+        grafanaTimeChangeHelperButton("time2");
+        newText = "Last 15 minutes"
+        break;
+      case '30m':
+        grafanaTimeChangeHelperButton("time3");
+        newText = "Last 30 minutes"
+        break;
+      case '1h':
+        grafanaTimeChangeHelperButton("time4");
+        newText = "Last 1 hour"
+        break;
+      case '3h':
+        grafanaTimeChangeHelperButton("time5");
+        newText = "Last 3 hours"
+        break;
+      case '6h':
+        grafanaTimeChangeHelperButton("time6");
+        newText = "Last 6 hours"
+        break;
+      case '12h':
+        grafanaTimeChangeHelperButton("time7");
+        newText = "Last 12 hours"
+        break;
+      case '24h':
+        grafanaTimeChangeHelperButton("time8");
+        newText = "Last 24 hours"
+        break;
+      case '2d':
+        grafanaTimeChangeHelperButton("time9");
+        newText = "Last 2 days"
+        break;
+      case '7d':
+        grafanaTimeChangeHelperButton("time10");
+        newText = "Last 7 days"
+        break;
+      case '30d':
+        grafanaTimeChangeHelperButton("time11");
+        newText = "Last 30 days"
+        break;
+      default:
+        alert('defualt');
+    }
+    document.getElementById("graph_time_dropdown").innerHTML = newText;
+  }
+
+  function grafanaTimeChangeHelperSrc(time) {
+    var time_select = time;
+    if (isDarkModeEnable) {
+      var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=dark&from=now-";
+    } else {
+      var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=light&from=now-";
+    }
+    document.getElementById("graph_station1_temperature").src = grafana_first_part_src + time_select + "&to=now&panelId=2";
+    document.getElementById("graph_station1_humidity").src = grafana_first_part_src + time_select + "&to=now&panelId=4";
+    document.getElementById("graph_station1_pm25").src = grafana_first_part_src + time_select + "&to=now&panelId=6";
+    document.getElementById("graph_station1_pm10").src = grafana_first_part_src + time_select + "&to=now&panelId=26";
+    document.getElementById("graph_station2_temperature").src = grafana_first_part_src + time_select + "&to=now&panelId=35";
+    document.getElementById("graph_station2_humidity").src = grafana_first_part_src + time_select + "&to=now&panelId=36";
+    document.getElementById("graph_station2_pm25").src = grafana_first_part_src + time_select + "&to=now&panelId=37";
+    document.getElementById("graph_station2_pm10").src = grafana_first_part_src + time_select + "&to=now&panelId=38";
+  }
+
+  function grafanaTimeChangeHelperButton(id) {
+    // Loop id from 'time1' to 'time11'
+    for (i = 1; i < 12; i++) {
+      i_str = i.toString();
+      id_target_str = "time" + i_str;
+      document.getElementById(id_target_str).classList.remove('bg-primary');
+      document.getElementById(id_target_str).classList.remove('disabled');
+    }
+
+    // Active the click dropdown & disabled
+    document.getElementById(id).classList.add('bg-primary');
+    document.getElementById(id).classList.add('disabled');
+  }
+
+
+
+  /********************************************************************************************************************
+  Tooltip Section
+  ********************************************************************************************************************/
+  $(function(){
+           $('[data-toggle="tooltip"]').tooltip({
+             animation: true,
+             boundary: 'viewport',
+             html: true,
+             delay: { "show": 100, "hide": 300 },
+           });
+
+           // Dark Mode Switch Toggle
+           $('#darkModeSwitch').bootstrapToggle({
+             on: 'Light',
+             off: 'Dark'
+           });
+  })
+
+  var pm25_info_htmltext = "<strong class='blue'>[ 0 - 25 ]</strong> - Very good. Suitable for outdoor activities and tourism.<br><strong class='green'>[ 26 - 37 ]</strong> - Good. Can do outdoor activities and travel as usual.<br><strong class='yellow'>[ 38 - 50 ]</strong> - Medium. Can do outdoor activities normally. May affect people who need special health care.<br><strong class='orange'>[ 51 - 90 ]</strong> - Began to affect health. Self-defense equipment is needed. The time spent outdoors should be shortened.<br><strong class='red'>[ 91 and above ]</strong> - Have an impact on health, everyone should avoid outdoor activities, avoid areas with high air pollution. Self-defense equipment is needed.";
+
+  var pm10_info_htmltext = "<strong class='blue'>[ 0 - 50 ]</strong> - Very good. Suitable for outdoor activities and tourism.<br><strong class='green'>[ 51 - 80 ]</strong> - Good. Can do outdoor activities and travel as usual.<br><strong class='yellow'>[ 81 - 120 ]</strong> - Medium. Can do outdoor activities normally. May affect people who need special health care.<br><strong class='orange'>[ 121 - 180 ]</strong> - Began to affect health. Self-defense equipment is needed. The time spent outdoors should be shortened.<br><strong class='red'>[ 180 and above ]</strong> - Have an impact on health, everyone should avoid outdoor activities, avoid areas with high air pollution. Self-defense equipment is needed.";
+
+  $('.pm25-tooltip').tooltip({title:pm25_info_htmltext, animation: true, html: true, boundary: 'viewport', delay: { "show": 100, "hide": 300 } });
+  $('.pm10-tooltip').tooltip({title:pm10_info_htmltext, animation: true, html: true, boundary: 'viewport', delay: { "show": 100, "hide": 300 } });
+
+</script>
+{% endblock script %}

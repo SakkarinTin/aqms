@@ -27,78 +27,101 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-date-range-picker/0.21.1/daterangepicker.min.css">
   <!-- summernote -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css">
+  <!-- Bootstrap Toggle v2.2.2 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
+
+
 
   <!--  Additional Custom Style-->
+  {% block style %}{% endblock style %}
+
+  <!-- Toggle Switch for Dark Mode -->
   <style>
-    #map {
-      height: 250px;
-      border: 1px solid grey;
+    .switchToggle input[type=checkbox] {
+      height: 0;
+      width: 0;
+      visibility: hidden;
+      position: absolute;
     }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    .switchToggle label {
+      cursor: pointer;
+      text-indent: -9999px;
+      width: 70px;
+      max-width: 70px;
+      height: 30px;
+      background: #d1d1d1;
+      display: block;
+      border-radius: 100px;
+      position: relative;
     }
 
-    [hidden] {
-      display: none !important;
+    .switchToggle label:after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 26px;
+      height: 26px;
+      background: #fff;
+      border-radius: 90px;
+      transition: 0.3s;
     }
 
-    /* Tooltip */
-    .tooltip > .tooltip-inner {
-      background-color: #E5E5E5;
-      color: #000000;
-      border: 1px grey;
-      padding: 10px;
-      font-size: 13px;
-    	text-align: justify;
-    }
-    /* Tooltip on right */
-    .bs-tooltip-top .arrow::before, .bs-tooltip-auto[x-placement^="top"] .arrow::before {
-      border-top-color: #E5E5E5 !important;
+    .switchToggle input:checked+label,
+    .switchToggle input:checked+input+label {
+      background: #3e98d3;
     }
 
-    .bs-tooltip-right .arrow::before, .bs-tooltip-auto[x-placement^="right"] .arrow::before {
-      border-right-color: #E5E5E5 !important;
+    .switchToggle input+label:before,
+    .switchToggle input+input+label:before {
+      content: 'Light';
+      position: absolute;
+      top: 2px;
+      left: 30px;
+      width: 26px;
+      height: 26px;
+      border-radius: 90px;
+      transition: 0.3s;
+      text-indent: 0;
+      color: #fff;
     }
 
-
-    .bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
-      border-bottom-color: #E5E5E5 !important;
+    .switchToggle input:checked+label:before,
+    .switchToggle input:checked+input+label:before {
+      content: 'Dark';
+      position: absolute;
+      top: 2px;
+      left: 7px;
+      width: 26px;
+      height: 26px;
+      border-radius: 90px;
+      transition: 0.3s;
+      text-indent: 0;
+      color: #fff;
     }
 
-
-    .bs-tooltip-left .arrow::before, .bs-tooltip-auto[x-placement^="left"] .arrow::before {
-      border-left-color: #E5E5E5 !important;
+    .switchToggle input:checked+label:after,
+    .switchToggle input:checked+input+label:after {
+      left: calc(100% - 2px);
+      transform: translateX(-100%);
     }
 
-    /* Class Color */
-    .blue{
-       background-color: #17BCD6;
-    }
-    .green{
-       background-color: green;
-    }
-    .yellow{
-      background-color: yellow;
-    }
-    .orange{
-       background-color: orange;
-    }
-    .red{
-       background-color: #FF4C25;
+    .switchToggle label:active:after {
+      width: 60px;
     }
 
+    .toggle-switchArea {
+      margin: 10px 0 10px 0;
+    }
   </style>
 
-
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed sidebar-closed sidebar-collapse" id="bodyID">
 <div class="wrapper">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar navbar-expand navbar-light navbar-white" id="navbarID">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -106,60 +129,38 @@
       </li>
     </ul>
 
-    <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
-      <div class="input-group input-group-sm" data-toggle="tooltip" title="Search Stations by ID<br><strong>eg. 1, 2, ...</strong>">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search Stations" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-          <!-- <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right"  title="<em>Tooltip</em> <u>with</u> <b>HTML</b>"></i> -->
-        </div>
+
+
+    {% block navbar %}{% endblock navbar %}
+
+
+
+      <div class="switchToggle" style="margin-left: 5px; margin-top:5px; ">
+        <input type="checkbox" id="switch" onchange="darkModeSwitch(this)">
+        <label for="switch">Toggle</label>
       </div>
-    </form>
 
 
-
-    <button id="station_switch">Switch Station</button>
-
-
-
-    <!-- Right navbar links -->
-
-    <ul class="navbar-nav ml-auto">
-
-      <!-- Grafana Graph Time Range -->
-      <div class="nav-item dropdown">
-        <a class="nav-link bg-secondary rounded dropdown-toggle" href="#" id="graph_time_dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Last 30 minutes
+      <!-- Dark Mode Switch -->
+      <!-- <li class="nav-item">
+        <a class="nav-link">
+          <div class="switchToggle">
+            <input type="checkbox" id="switch" onchange="darkModeSwitch(this)">
+            <label for="switch">Toggle</label>
+          </div>
         </a>
-        <div class="dropdown-menu py-0" style="left: 0px; right: inherit;">
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('5m')" id="time1">Last 5 minutes</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('15m')" id="time2">Last 15 minutes</a>
-          <a class="dropdown-item bg-primary disabled" href="javascript:grafanaTimeChange('30m')" id="time3">Last 30 minutes</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('1h')" id="time4">Last 1 hour</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('3h')" id="time5">Last 3 hour</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('6h')" id="time6">Last 6 hour</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('12h')" id="time7">Last 12 hour</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('24h')" id="time8">Last 24 hour</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('2d')" id="time9">Last 2 days</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('7d')" id="time10">Last 7 days</a>
-          <a class="dropdown-item" href="javascript:grafanaTimeChange('30d')" id="time11">Last 30 days</a>
-        </div>
-      </div>
+      </li> -->
 
-      <li class="nav-item">
+      <!-- Full Screen -->
+      <!-- <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
-      </li>
+      </li> -->
+
+
     </ul>
+
   </nav>
   <!-- /.navbar -->
 
@@ -191,34 +192,12 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item">
-            <a href="{% url 'index' %}" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-              </p>
-            </a>
-          </li>
 
-          <li class="nav-item">
-            <a href="{% url 'charts' %}" class="nav-link">
-              <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
-              <i class="nav-icon fas fa-history"></i>
-              <p>
-                History Logs
-              </p>
-            </a>
-          </li>
 
-          <li class="nav-item">
-            <a href="{% url 'charts' %}" class="nav-link">
-              <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
-              <i class="nav-icon fas fa-chart-bar"></i>
-              <p>
-                Analysis Page
-              </p>
-            </a>
-          </li>
+
+          {% block sidebar %}{% endblock sidebar %}
+
+
 
         </ul>
       </nav>
@@ -228,8 +207,14 @@
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="font-family: Arial, Helvetica, sans-serif">
+
+
+
     {% block content %}{% endblock content %}
+
+
+
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
@@ -255,6 +240,8 @@
 </script>
 <!-- Bootstrap 4 Bundle-->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap Toggle v2.2.2-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <!-- ChartJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <!-- Sparkline -->
@@ -279,385 +266,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0-rc/js/demo.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
-<!-- Google Maps scripts. -->
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9BfEYl8eZb3D-RqOHMYT-FrVUXd_v7Vk&callback=createMap&libraries=places" async defer></script>
+
+<!-- Dark Mode Switch -->
+<script type="text/javascript">
+  function darkModeSwitch(checkboxElem) {
+    if (checkboxElem.checked) {
+      // Enabled Dark Mode
+      document.getElementById("bodyID").classList.add('dark-mode');
+      document.getElementById("navbarID").classList.remove('navbar-light');
+      document.getElementById("navbarID").classList.remove('navbar-white');
+      document.getElementById("navbarID").classList.add('navbar-dark');
+      document.getElementById("navbarID").classList.add('navbar-gray-dark');
+      // map.setOptions({styles: dark_mode_json});
+    } else {
+      // Disabled Dark Mode
+      document.getElementById("bodyID").classList.remove('dark-mode');
+      document.getElementById("navbarID").classList.remove('navbar-dark');
+      document.getElementById("navbarID").classList.remove('navbar-gray-dark');
+      document.getElementById("navbarID").classList.add('navbar-light');
+      document.getElementById("navbarID").classList.add('navbar-white');
+      // map.setOptions({styles: []});
+    }
+  }
+</script>
 
 <!-- Custom script -->
-<script type="text/javascript">
-
-  // Function for Calculate the center point of multiple latitude/longitude coordinate pairs
-  function rad2degr(rad) { return rad * 180 / Math.PI; }
-  function degr2rad(degr) { return degr * Math.PI / 180; }
-
-  /**
-   * @param latLngInDeg array of arrays with latitude and longtitude
-   *   pairs in degrees. e.g. [[latitude1, longtitude1], [latitude2
-   *   [longtitude2] ...]
-   *
-   * @return array with the center latitude longtitude pairs in
-   *   degrees.
-   */
-
-   function getLatLngCenter(latLngInDegr) {
-      var LATIDX = 0;
-      var LNGIDX = 1;
-      var sumX = 0;
-      var sumY = 0;
-      var sumZ = 0;
-
-      for (var i=0; i<latLngInDegr.length; i++) {
-          var lat = degr2rad(latLngInDegr[i][LATIDX]);
-          var lng = degr2rad(latLngInDegr[i][LNGIDX]);
-          // sum of cartesian coordinates
-          sumX += Math.cos(lat) * Math.cos(lng);
-          sumY += Math.cos(lat) * Math.sin(lng);
-          sumZ += Math.sin(lat);
-      }
-
-      var avgX = sumX / latLngInDegr.length;
-      var avgY = sumY / latLngInDegr.length;
-      var avgZ = sumZ / latLngInDegr.length;
-
-      // convert average x, y, z coordinate to latitude and longtitude
-      var lng = Math.atan2(avgY, avgX);
-      var hyp = Math.sqrt(avgX * avgX + avgY * avgY);
-      var lat = Math.atan2(avgZ, hyp);
-
-      return ([rad2degr(lat), rad2degr(lng)]);
-  }
-
-  // Create Center Point Between Station Locations
-  var points = [
-
-    {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
-    {% for station in station_list %}
-    {% for log in station.list %}
-    {% if forloop.last %}
-        [{{ log.station_latitude }}, {{ log.station_longitude }}],
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
-
-  ];
-  var center_point = getLatLngCenter(points);
-
-  // Calculate The Zoom Level
-  var GLOBE_WIDTH = 256; // a constant in Google's map projection
-  if (points[0][1] < points[1][1]) {
-    var west = points[0][1];
-    var east = points[1][1];
-  } else {
-    var west = points[1][1];
-    var east = points[0][1];
-  }
-  var angle = east - west;
-  if (angle < 0) {
-    angle += 360;
-  }
-  var container = document.getElementById('map');
-  var width_pixel = container.offsetWidth;
-  var zoom_level = Math.round(Math.log(width_pixel * 360 / angle / GLOBE_WIDTH) / Math.LN2);
-
-  var dark_mode_json = [
-    {
-      "elementType": "geometry",
-      "stylers": [{"color": "#212121"}]
-    },
-    {
-      "elementType": "labels.icon",
-      "stylers": [{"visibility": "on"}]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [{"color": "#212121"}]
-    },
-    {
-      "featureType": "administrative",
-      "elementType": "geometry",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "featureType": "administrative.country",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#9e9e9e"}]
-    },
-    {
-      "featureType": "administrative.land_parcel",
-      "stylers": [{"visibility": "off"}]
-    },
-    {
-      "featureType": "administrative.locality",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#bdbdbd"}]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [{"color": "#181818"}]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#616161"}]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.stroke",
-      "stylers": [{"color": "#1b1b1b"}]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.fill",
-      "stylers": [{"color": "#2c2c2c"}]
-    },
-    {
-      "featureType": "road",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#8a8a8a"}]
-    },
-    {
-      "featureType": "road.arterial",
-      "elementType": "geometry",
-      "stylers": [{"color": "#373737"}]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [{"color": "#3c3c3c"}]
-    },
-    {
-      "featureType": "road.highway.controlled_access",
-      "elementType": "geometry",
-      "stylers": [{"color": "#4e4e4e"}]
-    },
-    {
-      "featureType": "road.local",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#616161"}]
-    },
-    {
-      "featureType": "transit",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#757575"}]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [{"color": "#000000"}]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [{"color": "#3d3d3d"}]
-    }
-  ];
+{% block script %}{% endblock script %}
 
 
-  var map;
 
-  function createMap () {
-
-    var options = {
-      center: { lat: center_point[0], lng: center_point[1] },
-      zoom: zoom_level,
-      //  draggable: false
-      styles: [],
-      mapTypeControl: false,
-      fullscreenControl: true,
-      streetViewControl: false,
-      zoomControl: false,
-    };
-
-    // New Map
-    map = new google.maps.Map(document.getElementById('map'), options);
-
-    // Change Theme [Dark Mode]
-    if (false) {
-        map.setOptions({styles : dark_mode_json});
-    }
-
-    // Add Marker
-    var markers = [
-
-      {% regroup stationlogs|dictsort:"station_id" by station_id as station_list %}
-      {% for station in station_list %}
-      {% for log in station.list %}
-      {% if forloop.last %}
-      {
-          coords: { lat: {{ log.station_latitude }}, lng: {{ log.station_longitude }} },
-          content: '<h4>Station: {{ log.station_id }}</h4>'
-      },
-      {% endif %}
-      {% endfor %}
-      {% endfor %}
-
-    ];
-
-
-    // Loop through markers
-    for(var i = 0; i < markers.length; i++){
-      addMarker(markers[i]);
-    }
-
-    // Add Marker Function
-    function addMarker(props){
-      var marker = new google.maps.Marker({
-          position: props.coords,
-          map: map,
-      });
-
-      // Check content
-      if(props.content){
-          var infoWindow = new google.maps.InfoWindow({
-              content: props.content
-          })
-
-          marker.addListener('click', function(){
-              infoWindow.open(map, marker);
-        });
-      }
-    }
-  }
-
-
-  // <!-- ============================================================================================================ -->
-  // <!-- ========================== Hide and Show Section =========================================================== -->
-  // <!-- ============================================================================================================ -->
-  $(document).ready(function() {
-
-    $('.station2').hide();
-    $("#station_switch").click(function(){
-      if ($(".station2").is(":hidden")) {
-        $('.station1').hide();
-        $('.station2').slideDown(1200);
-      } else {
-        $('.station2').hide();
-        $('.station1').slideDown(1200);
-      }
-    });
-
-
-  });
-
-  // Not Use
-  function toggle_display_by_id(id) {
-    var display = document.getElementById(id);
-    if (display.style.display == "flex") {
-      display.style.display = "none";
-    } else {
-      display.style.display = "flex";
-    }
-  }
-
-
-  // <!-- ============================================================================================================ -->
-  // <!-- ========================== Grafana Time Range Change =========================================================== -->
-  // <!-- ============================================================================================================ -->
-  function grafanaTimeChange(time) {
-    grafanaTimeChangeHelperSrc(time);
-    var newText;
-    switch (time) {
-      case '5m':
-        grafanaTimeChangeHelperButton("time1");
-        newText = "Last 5 minutes"
-        break;
-      case '15m':
-        grafanaTimeChangeHelperButton("time2");
-        newText = "Last 15 minutes"
-        break;
-      case '30m':
-        grafanaTimeChangeHelperButton("time3");
-        newText = "Last 30 minutes"
-        break;
-      case '1h':
-        grafanaTimeChangeHelperButton("time4");
-        newText = "Last 1 hour"
-        break;
-      case '3h':
-        grafanaTimeChangeHelperButton("time5");
-        newText = "Last 3 hours"
-        break;
-      case '6h':
-        grafanaTimeChangeHelperButton("time6");
-        newText = "Last 6 hours"
-        break;
-      case '12h':
-        grafanaTimeChangeHelperButton("time7");
-        newText = "Last 12 hours"
-        break;
-      case '24h':
-        grafanaTimeChangeHelperButton("time8");
-        newText = "Last 24 hours"
-        break;
-      case '2d':
-        grafanaTimeChangeHelperButton("time9");
-        newText = "Last 2 days"
-        break;
-      case '7d':
-        grafanaTimeChangeHelperButton("time10");
-        newText = "Last 7 days"
-        break;
-      case '30d':
-        grafanaTimeChangeHelperButton("time11");
-        newText = "Last 30 days"
-        break;
-      default:
-        alert('defualt');
-    }
-    document.getElementById("graph_time_dropdown").innerHTML = newText;
-  }
-
-  function grafanaTimeChangeHelperSrc(time) {
-    var first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&from=now-";
-    document.getElementById("graph_station1_temperature").src = first_part_src + time + "&to=now&panelId=2";
-    document.getElementById("graph_station1_humidity").src = first_part_src + time + "&to=now&panelId=4";
-    document.getElementById("graph_station1_pm25").src = first_part_src + time + "&to=now&panelId=6";
-    document.getElementById("graph_station1_pm10").src = first_part_src + time + "&to=now&panelId=26";
-    document.getElementById("graph_station2_temperature").src = first_part_src + time + "&to=now&panelId=35";
-    document.getElementById("graph_station2_humidity").src = first_part_src + time + "&to=now&panelId=36";
-    document.getElementById("graph_station2_pm25").src = first_part_src + time + "&to=now&panelId=37";
-    document.getElementById("graph_station2_pm10").src = first_part_src + time + "&to=now&panelId=38";
-
-
-  }
-
-  function grafanaTimeChangeHelperButton(id) {
-    // Loop id from 'time1' to 'time11'
-    for (i = 1; i < 12; i++) {
-      i_str = i.toString();
-      id_target_str = "time" + i_str;
-      document.getElementById(id_target_str).classList.remove('bg-primary');
-      document.getElementById(id_target_str).classList.remove('disabled');
-    }
-
-    // Active the click dropdown & disabled
-    document.getElementById(id).classList.add('bg-primary');
-    document.getElementById(id).classList.add('disabled');
-  }
-
-  /********************************************************************************************************************
-  Tooltip Section
-  ********************************************************************************************************************/
-  $(function(){
-           $('[data-toggle="tooltip"]').tooltip({animation: true, boundary: 'viewport', html: true, delay: { "show": 100, "hide": 300 }});
-  })
-
-  var pm25_info_htmltext = "<strong class='blue'>[ 0 - 25 ]</strong> - Very good. Suitable for outdoor activities and tourism.<br><strong class='green'>[ 26 - 37 ]</strong> - Good. Can do outdoor activities and travel as usual.<br><strong class='yellow'>[ 38 - 50 ]</strong> - Medium. Can do outdoor activities normally. May affect people who need special health care.<br><strong class='orange'>[ 51 - 90 ]</strong> - Began to affect health. Self-defense equipment is needed. The time spent outdoors should be shortened.<br><strong class='red'>[ 91 and above ]</strong> - Have an impact on health, everyone should avoid outdoor activities, avoid areas with high air pollution. Self-defense equipment is needed.";
-
-  var pm10_info_htmltext = "<strong class='blue'>[ 0 - 50 ]</strong> - Very good. Suitable for outdoor activities and tourism.<br><strong class='green'>[ 51 - 80 ]</strong> - Good. Can do outdoor activities and travel as usual.<br><strong class='yellow'>[ 81 - 120 ]</strong> - Medium. Can do outdoor activities normally. May affect people who need special health care.<br><strong class='orange'>[ 121 - 180 ]</strong> - Began to affect health. Self-defense equipment is needed. The time spent outdoors should be shortened.<br><strong class='red'>[ 180 and above ]</strong> - Have an impact on health, everyone should avoid outdoor activities, avoid areas with high air pollution. Self-defense equipment is needed.";
-
-  $('.pm25-tooltip').tooltip({title:pm25_info_htmltext, animation: true, html: true, boundary: 'viewport', delay: { "show": 100, "hide": 300 } });
-  $('.pm10-tooltip').tooltip({title:pm10_info_htmltext, animation: true, html: true, boundary: 'viewport', delay: { "show": 100, "hide": 300 } });
-
-</script>
 </body>
 </html>
