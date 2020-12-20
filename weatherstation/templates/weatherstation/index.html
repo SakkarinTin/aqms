@@ -91,12 +91,12 @@
   <!-- Grafana Graph Time Range -->
   <div class="nav-item dropdown" style="font-size: 90%;margin-left:5px;">
     <a class="nav-link bg-secondary rounded dropdown-toggle" href="#" id="graph_time_dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="far fa-clock"></i> Last 30 minutes
+      <i class="far fa-clock"></i> Last 5 minutes
     </a>
     <div class="dropdown-menu py-0">
-      <a class="dropdown-item" href="javascript:grafanaTimeChange('5m')" id="time1">Last 5 minutes</a>
+      <a class="dropdown-item bg-primary disabled" href="javascript:grafanaTimeChange('5m')" id="time1">Last 5 minutes</a>
       <a class="dropdown-item" href="javascript:grafanaTimeChange('15m')" id="time2">Last 15 minutes</a>
-      <a class="dropdown-item bg-primary disabled" href="javascript:grafanaTimeChange('30m')" id="time3">Last 30 minutes</a>
+      <a class="dropdown-item" href="javascript:grafanaTimeChange('30m')" id="time3">Last 30 minutes</a>
       <a class="dropdown-item" href="javascript:grafanaTimeChange('1h')" id="time4">Last 1 hour</a>
       <a class="dropdown-item" href="javascript:grafanaTimeChange('3h')" id="time5">Last 3 hour</a>
       <a class="dropdown-item" href="javascript:grafanaTimeChange('6h')" id="time6">Last 6 hour</a>
@@ -111,13 +111,28 @@
 {% endblock navbar %}
 <!-- ########################################### SIDE BAR ################################################################### -->
 {% block sidebar %}
-<li class="nav-item">
+<li class="nav-item menu-is-opening menu-open">
   <a href="{% url 'index' %}" class="nav-link active">
     <i class="nav-icon fas fa-tachometer-alt"></i>
     <p>
       Dashboard
+      <i class="right fas fa-angle-left"></i>
     </p>
   </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <span id="station1SelectNavbar" class="nav-link active" onclick="alert('click!');" style="cursor: pointer;" >
+        <i class="fas fa-satellite-dish nav-icon"></i>
+        <p>Station 1</p>
+      </span>
+    </li>
+    <li class="nav-item">
+      <a id="station2SelectNavbar" href="#" class="nav-link">
+        <i class="fas fa-satellite-dish nav-icon"></i>
+        <p>Station 2</p>
+      </a>
+    </li>
+  </ul>
 </li>
 
 <li class="nav-item">
@@ -125,20 +140,11 @@
     <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
     <i class="nav-icon fas fa-history"></i>
     <p>
-      History Logs
+      Logs History
     </p>
   </a>
 </li>
 
-<li class="nav-item">
-  <a href="{% url 'logs' %}" class="nav-link">
-    <!-- <i class="nav-icon fas fa-clipboard-list"></i> -->
-    <i class="nav-icon fas fa-chart-bar"></i>
-    <p>
-      Analysis Page
-    </p>
-  </a>
-</li>
 {% endblock sidebar %}
 <!-- ########################################### MAIN CONTENT ################################################################### -->
 {% block content %}
@@ -151,7 +157,7 @@
           <li class="breadcrumb-item"><a href="#">Home</a></li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
-      </div>
+      </div>MAIN CONTENT
     </div>
   </div>
 </section> -->
@@ -195,8 +201,8 @@
     <!-- Head Label -->
     <div class="station" id="head_station1" style="display:flex; margin-bottom:10px;">
       <div class="col-sm-12">
-        <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
-        <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+        <h4 class="m-0" style="float: left;"><strong>Station {{ log.station_id }}</strong></h4>
+        <strong><h8 id="station1_recorded_time" style="float: right;">Last Updated : {{ log.station_recorded_time|naturaltime }}</h8></strong>
       </div>
     </div><!-- /.row -->
 
@@ -209,7 +215,7 @@
           <span class="info-box-icon bg-success"><i class="fas fa-thermometer-half"></i></span>
           <div class="info-box-content">
             <h4 style="color: #00B743;"><strong>Temperature</strong></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_temperature|floatformat:1  }}
+            <span id="station1_temperature" class="info-box-number" style="font-size:25px;">{{ log.station_temperature|floatformat:1 }}
               <p style="display:inline;font-size:22px;">°C</p>
             </span>
           </div>
@@ -222,7 +228,7 @@
           <span class="info-box-icon bg-info"><i class="fas fa-tint"></i></span>
           <div class="info-box-content">
             <h4 style="color: #00A3BA;"><strong>Humidity</strong></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_humidity|floatformat:1 }}
+            <span id="station1_humidity" class="info-box-number" style="font-size:25px;">{{ log.station_humidity|floatformat:1 }}
               <p style="display:inline;font-size:22px;">%</p>
             </span>
           </div>
@@ -235,7 +241,7 @@
           <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
           <div class="info-box-content">
             <h4 style="color: #6B747D;"><strong>PM <sub>2.5</sub></strong><i id="pm-tooltip" style="float:right;" class="fas fa-info-circle pm25-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }}
+            <span id="station1_pm25" class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }}
               <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
             </span>
           </div>
@@ -248,7 +254,7 @@
           <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
           <div class="info-box-content">
             <h4 style="color: #6B747D;"><strong>PM <sub>10</sub></strong><i style="float:right;" class="fas fa-info-circle pm10-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }}
+            <span id="station1_pm10" class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }}
               <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
             </span>
           </div>
@@ -334,7 +340,7 @@
     <div class="station" id="head_station1" style="display:flex; margin-bottom:10px;">
       <div class="col-sm-12">
         <h5 class="m-0" style="float: left;">Station {{ log.station_id }}</h5>
-        <h8 style="float: right;">Last Updated : &nbsp;{{ log.station_recorded_time|naturaltime }}</h8>
+        <h8 id="station2_recorded_time" style="float: right;">Last Updated : {{ log.station_recorded_time|naturaltime }}</h8>
       </div>
     </div><!-- /.row -->
 
@@ -347,7 +353,7 @@
           <span class="info-box-icon bg-success"><i class="fas fa-thermometer-half"></i></span>
           <div class="info-box-content">
             <h4 style="color: #00B743;"><strong>Temperature</strong></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_temperature|floatformat:1 }}
+            <span id="station2_temperature" class="info-box-number" style="font-size:25px;">{{ log.station_temperature|floatformat:1 }}
               <p style="display:inline;font-size:22px;">°C</p>
             </span>
           </div>
@@ -360,7 +366,7 @@
           <span class="info-box-icon bg-info"><i class="fas fa-tint"></i></span>
           <div class="info-box-content">
             <h4 style="color: #00A3BA;"><strong>Humidity</strong></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_humidity|floatformat:1 }}
+            <span id="station2_humidity" class="info-box-number" style="font-size:25px;">{{ log.station_humidity|floatformat:1 }}
               <p style="display:inline;font-size:22px;">%</p>
             </span>
           </div>
@@ -373,7 +379,7 @@
           <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
           <div class="info-box-content">
             <h4 style="color: #6B747D;"><strong>PM <sub>2.5</sub></strong><i style="float:right;" class="fas fa-info-circle pm25-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }}
+            <span id="station2_pm25" class="info-box-number" style="font-size:25px;">{{ log.station_pm25 }}
               <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
             </span>
           </div>
@@ -386,7 +392,7 @@
           <span class="info-box-icon bg-secondary"><i class="fab fa-first-order-alt fa-2x"></i></span>
           <div class="info-box-content">
             <h4 style="color: #6B747D;"><strong>PM <sub>10</sub></strong><i style="float:right;" class="fas fa-info-circle pm10-tooltip" data-toggle="tooltip" data-placement="right"></i></h4>
-            <span class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }}
+            <span id="station_pm10" class="info-box-number" style="font-size:25px;">{{ log.station_pm10 }}
               <p style="display:inline;font-size:16px;">µg./m<sup>3</sup></p>
             </span>
           </div>
@@ -731,8 +737,9 @@
   // <!-- ========================== Change Map Dark Mode ============================================================ -->
   // <!-- ============================================================================================================ -->
   var isDarkModeEnable = false;
-  var time_select = '30m';
+  var time_select = '5m';
   var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=light&from=now-";
+
   function darkModeSwitch(checkboxElem) {
     if (checkboxElem.checked) {
       // Enabled Dark Mode
@@ -779,57 +786,15 @@
     }
   }
 
-
-  // <!-- ============================================================================================================ -->
-  // <!-- ========================== Hide and Show Section =========================================================== -->
-  // <!-- ============================================================================================================ -->
-  $(document).ready(function() {
-
-    $('.station2').hide();
-    $("#station_switch").click(function(){
-      if ($(".station2").is(":hidden")) {
-        $('.station1').hide();
-        $('.station2').slideDown(1200);
-      } else {
-        $('.station2').hide();
-        $('.station1').slideDown(1200);
-      }
-    });
-
-    $('#searchForm').submit(function (e) {
-        e.preventDefault();
-
-        // Get Input Element
-        var input = document.getElementById("inputForm");
-
-        // Select Station with click trigger on Marker
-        if (input.value === "1") {
-          google.maps.event.trigger(map.markers[0], 'click');
-        } else if (input.value === "2") {
-          google.maps.event.trigger(map.markers[1], 'click');
-        } else {
-          alert("There is no Station " + input.value + " in the system.");
-        }
-
-        // Reset field input
-        input.value = "";
-
-        // Remove Focus Input form
-        $("#inputForm").blur();
-    });
-
-
-  });
-
   // Not Use
-  function toggle_display_by_id(id) {
-    var display = document.getElementById(id);
-    if (display.style.display == "flex") {
-      display.style.display = "none";
-    } else {
-      display.style.display = "flex";
-    }
-  }
+  // function toggle_display_by_id(id) {
+  //   var display = document.getElementById(id);
+  //   if (display.style.display == "flex") {
+  //     display.style.display = "none";
+  //   } else {
+  //     display.style.display = "flex";
+  //   }
+  // }
 
 
   // <!-- ============================================================================================================ -->
@@ -841,47 +806,58 @@
     switch (time) {
       case '5m':
         grafanaTimeChangeHelperButton("time1");
-        newText = "Last 5 minutes"
+        newText = "Last 5 minutes";
+        time_select = '5m';
         break;
       case '15m':
         grafanaTimeChangeHelperButton("time2");
-        newText = "Last 15 minutes"
+        newText = "Last 15 minutes";
+        time_select = '15m';
         break;
       case '30m':
         grafanaTimeChangeHelperButton("time3");
-        newText = "Last 30 minutes"
+        newText = "Last 30 minutes";
+        time_select = '30m';
         break;
       case '1h':
         grafanaTimeChangeHelperButton("time4");
-        newText = "Last 1 hour"
+        newText = "Last 1 hour";
+        time_select = '1h';
         break;
       case '3h':
         grafanaTimeChangeHelperButton("time5");
-        newText = "Last 3 hours"
+        newText = "Last 3 hours";
+        time_select = '3h';
         break;
       case '6h':
         grafanaTimeChangeHelperButton("time6");
-        newText = "Last 6 hours"
+        newText = "Last 6 hours";
+        time_select = '6h';
         break;
       case '12h':
         grafanaTimeChangeHelperButton("time7");
-        newText = "Last 12 hours"
+        newText = "Last 12 hours";
+        time_select = '12h';
         break;
       case '24h':
         grafanaTimeChangeHelperButton("time8");
-        newText = "Last 24 hours"
+        newText = "Last 24 hours";
+        time_select = '24h';
         break;
       case '2d':
         grafanaTimeChangeHelperButton("time9");
-        newText = "Last 2 days"
+        newText = "Last 2 days";
+        time_select = '2d';
         break;
       case '7d':
         grafanaTimeChangeHelperButton("time10");
-        newText = "Last 7 days"
+        newText = "Last 7 days";
+        time_select = '7d';
         break;
       case '30d':
         grafanaTimeChangeHelperButton("time11");
-        newText = "Last 30 days"
+        newText = "Last 30 days";
+        time_select = '30d';
         break;
       default:
         alert('defualt');
@@ -890,7 +866,7 @@
   }
 
   function grafanaTimeChangeHelperSrc(time) {
-    var time_select = time;
+    time_select = time;
     if (isDarkModeEnable) {
       var grafana_first_part_src = "http://www.aqmswebsite.tk/grafana/d-solo/4wv0ENHGz/air-quality-monitoring-system?orgId=1&refresh=5s&&theme=dark&from=now-";
     } else {
@@ -946,6 +922,133 @@
 
   $('.pm25-tooltip').tooltip({title:pm25_info_htmltext, animation: true, html: true, boundary: 'viewport', delay: { "show": 100, "hide": 300 } });
   $('.pm10-tooltip').tooltip({title:pm10_info_htmltext, animation: true, html: true, boundary: 'viewport', delay: { "show": 100, "hide": 300 } });
+
+
+  $(document).ready(function() {
+
+    // ******************************  Hide Staion 2 at defualt *****************************************************
+    $('.station2').hide();
+    $("#station_switch").click(function(){
+      if ($(".station2").is(":hidden")) {
+        $('.station1').hide();
+        $('.station2').slideDown(1200);
+      } else {
+        $('.station2').hide();
+        $('.station1').slideDown(1200);
+      }
+    });
+
+    // ******************************  Search Form *****************************************************
+    $('#searchForm').submit(function (e) {
+        e.preventDefault();
+
+        // Get Input Element
+        var input = document.getElementById("inputForm");
+
+        // Select Station with click trigger on Marker
+        if (input.value === "1") {
+          google.maps.event.trigger(map.markers[0], 'click');
+        } else if (input.value === "2") {
+          google.maps.event.trigger(map.markers[1], 'click');
+        } else {
+          alert("There is no Station " + input.value + " in the system.");
+        }
+
+        // Reset field input
+        input.value = "";
+
+        // Remove Focus Input form
+        $("#inputForm").blur();
+    });
+
+    // ******************************  Ajax Update Data Real-time *****************************************************
+    setInterval(function(){
+        $.ajax({
+          type:"GET",
+          url:"/get/ajax",
+          data: "",
+          success: function(result){
+            $.each(result, function(key, val)
+            {
+              // Station 1 *****************************************************
+              if ( val['station1_temperature'] ) {
+                $("#station1_temperature").text(val.station1_temperature);
+                $("#station1_temperature").append(
+                    $('<p>').css({"display": "inline", "font-size": "22px"}).text(" °C")
+                )
+              } else if ( val['station1_humidity'] ) {
+                $("#station1_humidity").text(val.station1_humidity);
+                $("#station1_humidity").append(
+                    $('<p>').css({"display": "inline", "font-size": "22px"}).text(" %")
+                )
+              } else if ( val['station1_pm25'] ) {
+                $("#station1_pm25").text(val.station1_pm25);
+                $('#station1_pm25').append(
+                    $('<p>').css({'display':'inline', 'font-size':'24px'}).append(" ").append(
+                      $('<p>').css({'display':'inline', 'font-size':'16px'}).text(" µg./m").append(
+                        $('<sup>').text("3")
+                      )
+                    )
+                );
+              } else if ( val['station1_pm10'] ) {
+                $("#station1_pm10").text(val.station1_pm10);
+                $('#station1_pm10').append(
+                    $('<p>').css({'display':'inline', 'font-size':'24px'}).append(" ").append(
+                      $('<p>').css({'display':'inline', 'font-size':'16px'}).text(" µg./m").append(
+                        $('<sup>').text("3")
+                      )
+                    )
+                );
+              } else if ( val['station1_latitude'] ) {
+                // do nothing
+              } else if ( val['station1_longitude'] ) {
+                // do nothing
+              } else if ( val['station1_recorded_time'] ) {
+                $("#station1_recorded_time").text("Last Updated :  "+val.station1_recorded_time);
+              }
+              // Station 2 *****************************************************
+              else if ( val['station2_temperature'] ) {
+                $("#station2_temperature").text(val.station2_temperature);
+                $("#station2_temperature").append(
+                    $('<p>').css({"display": "inline", "font-size": "22px"}).text(" °C")
+                )
+              } else if ( val['station2_humidity'] ) {
+                $("#station2_humidity").text(val.station2_humidity);
+                $("#station2_humidity").append(
+                    $('<p>').css({"display": "inline", "font-size": "22px"}).text(" %")
+                )
+              } else if ( val['station2_pm25'] ) {
+                $("#station2_pm10").text(val.station2_pm10);
+                $('#station2_pm10').append(
+                    $('<p>').css({'display':'inline', 'font-size':'24px'}).append(" ").append(
+                      $('<p>').css({'display':'inline', 'font-size':'16px'}).text(" µg./m").append(
+                        $('<sup>').text("3")
+                      )
+                    )
+                );
+              } else if ( val['station2_pm10'] ) {
+                $("#station2_pm10").text(val.station2_pm10);
+                $('#station2_pm10').append(
+                    $('<p>').css({'display':'inline', 'font-size':'24px'}).append(" ").append(
+                      $('<p>').css({'display':'inline', 'font-size':'16px'}).text(" µg./m").append(
+                        $('<sup>').text("3")
+                      )
+                    )
+                );
+              } else if ( val['station2_latitude'] ) {
+                // do nothing
+              } else if ( val['station2_longitude'] ) {
+                // do nothing
+              } else if ( val['station2_recorded_time'] ) {
+                $("#station2_recorded_time").text("Last Updated :  "+val.station2_recorded_time);
+              }
+
+            });
+          }
+        });
+    }, 5000);//time in milliseconds
+
+  });
 
 </script>
 {% endblock script %}

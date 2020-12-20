@@ -13,7 +13,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('history-logs/', views.logs, name='logs')
+    path('logs-history/', views.logs, name='logs'),
+    path('get/ajax', views.AjaxHandlerView, name = "AjaxHandlerView")
 ]
 
 # urlpatterns += staticfiles_urlpatterns()
