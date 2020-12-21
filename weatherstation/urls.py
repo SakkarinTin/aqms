@@ -14,7 +14,7 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('logs-history/', views.logs, name='logs'),
-    path('get/ajax', views.AjaxHandlerView, name = "AjaxHandlerView")
+    path('get/ajax', views.AjaxHandlerView, name = "AjaxHandlerView"),
 ]
 
 # urlpatterns += staticfiles_urlpatterns()

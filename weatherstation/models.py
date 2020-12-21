@@ -50,3 +50,4 @@ class StationLogs(models.Model):
         ordering = ['log_id', '-station_recorded_time']
         verbose_name = 'Log'
         verbose_name_plural = 'Logs'
+        # db_table = 'stationlogs'

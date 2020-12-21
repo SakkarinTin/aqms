@@ -10,7 +10,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 import random, requests as req, json
 from .utils import serialize_bootstraptable
 
-# Not Use This Anymore
+
 def index(request):
     context = {
         'stationlogs': StationLogs.objects.all()
@@ -21,7 +21,7 @@ def index(request):
 
 def logs(request):
     context = {
-        'stationlogs': StationLogs.objects.all()
+        'stationlogs': StationLogs.objects.get(station_id=1).all()
     }
 
     return render(request, 'weatherstation/logs.html', context)
@@ -29,6 +29,15 @@ def logs(request):
     # data = StationLogs.objects.all().values()
     #
     # return render(request, 'weatherstation/charts.html', {'data': data})
+
+
+def data(request):
+    context = {
+        'stationlogs': StationLogs.objects.all()
+    }
+
+    return render(request, 'weatherstation/data.html', context)
+
 
 def AjaxHandlerView(request):
     data = []
@@ -60,75 +69,6 @@ def AjaxHandlerView(request):
     # return render(request, 'weatherstation/index.html', json.dumps(data))
     return JsonResponse(data, safe=False)
 
-def AjaxHandlerViewX(View):
-    def get(self, request):
-        context = {
-            'data_station1': Stations.objects.get(station_id=1).logs.last(),
-            'data_station2': Stations.objects.get(station_id=2).logs.last()
-        }
-        print("\n"+"GET"+"\n")
-        return render(request, 'weatherstation/index.html', context)
-
-
-def view_logs(request):
-    json_send = serialize_bootstraptable(StationLogs.objects.all())
-
-    return JsonResponse(json_send, safe=False)
-
-
-def checkNickName(request):
-    # request should be ajax and method should be GET.
-    if request.is_ajax and request.method == "GET":
-        # get the nick name from the client side.
-        nick_name = request.GET.get("nick_name", None)
-        # check for the nick name in the database.
-        if Friend.objects.filter(nick_name = nick_name).exists():
-            # if nick_name found return not valid new friend
-            return JsonResponse({"valid":False}, status = 200)
-        else:
-            # if nick_name not found, then user can create a new friend.
-            return JsonResponse({"valid":True}, status = 200)
-
-    return JsonResponse({}, status = 400)
-
-def updateDashboardData(request):
-    # request should be ajax and method should be GET.
-    if request.is_ajax and request.method == "GET":
-        context = {
-            'stationlogs': StationLogs.objects.all()
-        }
-        if Friend.objects.filter(nick_name = nick_name).exists():
-            # if nick_name found return not valid new friend
-            return JsonResponse({"valid":False}, status = 200)
-        else:
-            # if nick_name not found, then user can create a new friend.
-            return JsonResponse({"valid":True}, status = 200)
-
-    return JsonResponse({}, status = 400)
-
-
-def post(self,request, *args, **kwargs):
-    if self.request.is_ajax():
-        return self.ajax(request)
-
-def ajax(self, request):
-    response_dict= {
-        'success': True,
-    }
-    action = request.POST.get('action','')
-
-    if action == 'add_car':
-        car_id = request.POST.get('id','')
-
-    if hasattr(self, action):
-        response_dict = getattr(self, action)(request)
-        car = CAR.objects.get(ida_name='car_id')
-        response_dict = {
-            'car_name':car.name
-        }
-
-    return HttpResponse(simplejson.dumps(response_dict),
-                        mimetype='application/json')
 
 # Index View
 class StationListView(ListView):

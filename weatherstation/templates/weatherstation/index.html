@@ -121,13 +121,13 @@
   </a>
   <ul class="nav nav-treeview">
     <li class="nav-item">
-      <span id="station1SelectNavbar" class="nav-link active" onclick="alert('click!');" style="cursor: pointer;" >
+      <span id="selectStation1" class="nav-link active" onclick="selectStation('1');" style="cursor: pointer;" >
         <i class="fas fa-satellite-dish nav-icon"></i>
         <p>Station 1</p>
       </span>
     </li>
     <li class="nav-item">
-      <a id="station2SelectNavbar" href="#" class="nav-link">
+      <a id="selectStation2" href="#" class="nav-link" onclick="selectStation('2');" style="cursor: pointer;" >
         <i class="fas fa-satellite-dish nav-icon"></i>
         <p>Station 2</p>
       </a>
@@ -896,6 +896,28 @@
     document.getElementById(id).classList.add('disabled');
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // =======================================================================================================
+  // Nav Bar Select Station ********************************************************************************
+  function selectStation(station_id) {
+
+
+
+    // Select Station with click trigger on Marker
+    if (station_id === "1") {
+      google.maps.event.trigger(map.markers[0], 'click');
+      document.getElementById("selectStation1").classList.add('active');
+      document.getElementById("selectStation2").classList.remove('active');
+    } else if (station_id === "2") {
+      google.maps.event.trigger(map.markers[1], 'click');
+      document.getElementById("selectStation2").classList.add('active');
+      document.getElementById("selectStation1").classList.remove('active');
+    } else {
+      alert("Exception!");
+    }
+
+  }
+
 
 
   /********************************************************************************************************************
@@ -960,6 +982,8 @@
         // Remove Focus Input form
         $("#inputForm").blur();
     });
+
+
 
     // ******************************  Ajax Update Data Real-time *****************************************************
     setInterval(function(){
