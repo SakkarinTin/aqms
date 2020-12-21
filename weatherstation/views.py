@@ -21,7 +21,7 @@ def index(request):
 
 def logs(request):
     context = {
-        'stationlogs': StationLogs.objects.get(station_id=1).all()
+        'stationlogs': StationLogs.objects.all()
     }
 
     return render(request, 'weatherstation/logs.html', context)
