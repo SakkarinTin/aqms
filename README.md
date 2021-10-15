@@ -1,6 +1,6 @@
 # AQMS - Air Quality Monitoring System
 
-AQMS is my final project of the bechlor degree.
+AQMS is my bechelor's degree final project.
 
 Due to my absent class activities, 
 I develop my final project all by myself with 
